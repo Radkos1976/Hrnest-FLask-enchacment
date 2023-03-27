@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+
+<div class="container" style="width: 400px; height: 475px;max-height:550px; position: absolute; top: 50%; left: 50%; margin-top: -300px; margin-left: -200px;  ">
+    <div class="container" style="color: #333; background-color: #fff; border: thin solid black; padding-top: 2px; padding-bottom: 2px; margin-left: 2px; margin-right: 2px; ">
+        <h2></h2>
+        <div class="well">
+            <div style="padding: 6px 12px; display: block; background: url(/static/content/images/HrnestBoss.svg) no-repeat; width: 230px; height: 38px; text-indent: -9998px;"></div>
+            <h1 style="text-align:center">Sign In </h1>
+            <form action="" method="post" style="text-align:center" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32) }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32,autocomplete="off") }}<br>
+                    {% for error in form.password.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                <span style="background-color: yellow; text-align: center">{{ message }}</span>
+                {% endfor %}
+                {% else %}
+                <h2></h2>
+                {% endif %}
+                {% endwith %}
+                <p>{{ form.submit() }}</p>
+                {% if m_identity %}
+                <h2></h2>
+                <div style="width: 65%; margin: 0 auto;">
+                    <a href="{{ auth_url }}">
+                        <img src=/static/content/images/ms-symbollockup_signin_dark.svg />
+                    </a>
+                </div>
+                {% endif %}
+                {% if anymous %}
+                <h2></h2>
+                <div style="width: 85%; margin: 0 auto; background-color:black">
+                    <a href="{{ url_for('set_userAsForView') }}">
+                        <img src=/static/content/images/OpenForView.svg />
+                    </a>
+                </div>
+                {% endif %}
+            </form>
+            <p style="text-align:center">New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+        </div>
+    </div>
+    <p style="text-align:center;">
+        <b style="color: #fff">Forgot Password or UserName ?</b>
+        <b><a href="{{ url_for('mail_reset') }}">Click to send restore account link on the selected e-mail address</a></b>
+    </p>
+    <h2></h2>
+    <p style="text-align:center;">
+        <b style="color: #fff">Don't see activation Link in your mailbox ?</b>
+        <b><a href="{{ url_for('mail_activation') }}">Press for send new on the selected e-mail address</a></b>
+    </p>
+
+</div>
+
+{% endblock %}

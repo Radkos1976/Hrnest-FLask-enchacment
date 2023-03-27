@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="width: 400px; height: 475px;max-height:550px; position: absolute; top: 50%; left: 50%; margin-top: -300px; margin-left: -200px;  ">
+    <div class="container" style="color: #333; background-color: #fff; border: thin solid black; padding-top: 2px; padding-bottom: 2px; margin-left: 2px; margin-right: 2px; ">
+        <h2></h2>
+        <div class="well">
+            <div style="padding: 6px 12px; display: block; background: url(/static/content/images/HrnestBoss.svg) no-repeat; width: 230px; height: 38px; text-indent: -9998px;"></div>
+            <h1 style="text-align:center">Register</h1>
+            <form action="" method="post" style="text-align:center">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.change_userName }}
+                    {{ form.change_userName.label }}<br>
+                </p>
+                <p>
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32) }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <h1></h1>
+                <p>
+                    {{ form.change_password }}
+                    {{ form.change_password.label }}<br>
+                </p>
+                <p>
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32) }}<br>
+                    {% for error in form.password.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.password2.label }}<br>
+                    {{ form.password2(size=32) }}<br>
+                    {% for error in form.password2.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.submit() }}
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+        {% endblock %}

@@ -1,0 +1,1016 @@
+
+.opt1 {
+	/*background-color: lightblue*/
+	background-color: rgb(204, 255, 255, 0.5)
+}
+.opt2 {
+	/*background-color: lightsteelblue*/
+	background-color:rgba(204, 204, 225, 0.877)
+}
+.opt1n {
+	background-color: rgb(204, 255, 255, 0.5)
+	/*background-color: rgb(233, 225, 225, 0.5)*/
+}
+.optn2 {
+	background-color: rgb(204, 204, 225, 0.5)
+	/*background-color: rgb(233, 225, 225, 0.5)*/
+}
+.optSNET {
+	/*background-color: rgb(240, 121, 200, 0.5)*/
+	background-color: rgb(146, 208, 80, 0.5)
+}
+.optnb {
+	/*background-color: rgb(98, 99, 100, 0.5)*/
+	background-color: rgb(255, 204, 204, 0.5)
+}
+.optnba {
+	/*background-color: rgb(98, 99, 100, 0.5)*/
+	background-color: rgb(255, 124, 128, 0.5)
+}
+.opts {
+	/*background-color: rgb(240, 121, 180, 0.5)*/
+	background-color: rgb(233, 225, 225, 0.5)
+}
+.optz {
+	/*background-color: rgb(233, 225, 225, 0.5)*/
+	background-color: rgb(233, 225, 225, 0.5)
+}
+.optQC {
+	/*background-color: rgb(233, 225, 225, 0.5)*/
+	background-color: rgb(233, 225, 225, 0.5)
+}
+.opt {
+	opacity: 0.2;
+	background-color: rgb(233, 225, 225, 0.5)
+}
+.optSzkol {
+	/*background-color: rgb(161, 108, 214, 0.5)*/
+	background-color: rgb(233, 225, 225, 0.5)
+}
+.optu {
+	background-color: rgb(255, 204, 204,0.9)
+}
+.optLD {
+	/*background-color: rgb(233, 225, 225, 0.5)*/
+	background-color: rgb(233, 225, 225, 0.5)
+}
+.flash
+{
+    background-color:red;
+}
+.desc {
+	overflow: visible;
+	background: url(../content/images/desc.png) top right no-repeat;
+}
+.NodeTMT1 {
+	background-color: white;
+	font-weight: bold;
+}
+.NodeTMT2 {
+	background-color:lightblue;
+
+}
+.NodeTMT3 {
+	background-color:antiquewhite;
+	font-weight: lighter;
+}
+.asc {
+	overflow: visible;
+	background: url(../content/images/asc.png) top right no-repeat;
+}
+.filter {
+	overflow: visible;
+	background: url(../content/images/filter.png)  bottom right no-repeat;
+}
+#dialog-form.selepers {
+	z-index: 5;	
+	display: none;
+	overflow-x:hidden;
+	overflow-y:hidden;
+}
+#menuP {
+	z-index: 5;
+	position: absolute;
+	display: none;
+}
+ul#MenuChanges {
+	z-index: 5;
+	position: absolute;
+	display: none;
+}
+#PersMnu {
+	z-index: 6;
+	position: absolute;
+	display: none;
+}
+#NamingSettings {
+	z-index: 100;
+}
+#menu {
+	z-index: 5;
+	position: absolute;
+	display: none;
+}
+#menuitem {
+	
+	z-index: 5;
+	position: absolute;
+	display: none;
+}
+#menuside {
+	z-index: 6;
+	position: absolute;
+	display: none;
+}
+#submenu {
+	z-index: 6;
+	position: absolute;
+	width: 150px;
+}
+#NAV {
+	z-index: 3;
+	position: center;
+	top: 0px;
+	
+}
+#NAV button {
+		height:4vh;
+		background-color: rgb(169, 167, 190);
+		color: white;
+	}
+#NAV button:hover {
+		background-color: #ffdb3a;
+}
+#NAV select{
+	height:4vh;
+}
+.thisday {
+	border: 3px solid tomato;
+}
+.single-menu-item .ui-icon {
+	display: none !important;
+}
+
+.single-menu-container {
+	display: none !important;
+}
+html {
+		box-sizing: border-box;
+	}
+  *,
+  *:before,
+  *:after {
+	box-sizing: inherit;
+  }
+#standard-select {
+	min-width: 62px;
+	min-height:22px;
+	cursor: pointer;
+}
+.table-req tbody td {
+	height: 40px;
+}
+
+.table-req {
+	overflow: scroll;
+	display: flex;
+	position: relative;
+	/*width: 100%;*/
+	z-index: 1;
+	margin: auto;
+	height: 55vh;
+	border-radius: 2%;
+}
+
+	.table-req table {
+		width: 100%;
+		min-width: 500px;
+		min-height: 50vh;
+		margin: auto;
+		border-collapse: unset;
+		border-spacing: 0;
+	}
+
+	.table-req th,
+	.table-req td {
+		padding: 0px 5px;
+		border: 1px solid rgb(247, 244, 244);
+		position: relative;
+		font-size: 14px;
+		margin: 0 0 0px;
+		max-height: 0.5vw;
+		text-align: center;
+		align-items: center;
+		cursor: pointer;
+		justify-content: center;
+		vertical-align: central;
+	}
+
+	.table-req thead th {
+		z-index: 4;
+		background: #333;
+		color: #fff;
+		position: -webkit-sticky;
+		position: sticky;
+		top: 0;
+		font-size: 12px;
+		max-height: 1vw;
+		text-align: center;
+	}
+
+
+	/* safari and ios need the tfoot itself to be position:sticky also */
+	.table-req tfoot,
+	.table-req tfoot th,
+	.table-req tfoot td {
+		position: -webkit-sticky;
+		position: sticky;
+		bottom: 0;
+		background: #333;
+		color: #fff;
+		z-index: 4;
+		max-height: 1vw;
+		font-size: 12px;
+		text-align: center;
+	}
+
+	.table-req tbody.hov :hover {
+		z-index: 200;
+		background-color: LightGreen;
+	}
+
+	.table-req tbody :focus {
+		outline: 0; /*remove outline*/
+	}
+
+
+
+.table-pers tbody td {
+	height: 40px;
+}
+.table-pers {
+	overflow: scroll;
+	display: flex;
+	position: relative;
+	/*width: 100%;*/
+	z-index: 1;
+	margin: auto;
+	height: 78vh;
+	border-radius: 2%;
+}
+
+.table-pers table {
+	width: 100%;
+	min-width: 1280px;
+	min-height: 78vh;
+	margin: auto;
+	border-collapse: unset;
+	border-spacing: 0;
+}
+
+.table-pers th,
+.table-pers td {
+		padding: 0px 5px;
+		border: 1px solid rgb(247, 244, 244);
+		position: relative;
+		font-size: 14px;
+		margin: 0 0 0px;
+		max-height: 0.5vw;
+		text-align: center;
+		align-items: center;
+		cursor: pointer;
+
+		justify-content: center;
+		vertical-align: central;
+}
+.table-pers thead th {
+		z-index: 4;
+		background: #333;
+		color: #fff;
+		position: -webkit-sticky;
+		position: sticky;
+		top: 0;
+		font-size: 12px;
+		max-height: 1vw;
+		text-align: center;
+}
+
+
+/* safari and ios need the tfoot itself to be position:sticky also */
+.table-pers tfoot,
+.table-pers tfoot th,
+.table-pers tfoot td {
+		position: -webkit-sticky;
+		position: sticky;
+		bottom: 0;
+		background: #333;
+		color: #fff;
+		z-index: 4;
+		max-height: 1vw;
+		font-size: 12px;
+		text-align: center;
+}
+
+.table-pers tbody.hov :hover {
+		z-index: 200;
+		background-color: LightGreen;
+}
+
+.table-pers tbody :focus {		
+		outline: 0; /*remove outline*/
+}
+
+.table-scroll {
+	overflow: scroll;
+	display: flex;
+	position: relative;
+	/*width: 100%;*/
+	z-index: 1;
+	margin: auto;
+	height: 83vh;
+	border-radius: 2%;
+}
+  .table-scroll table {
+	width: 100%;
+	min-width: 1280px;
+	min-height:83vh;
+	margin: auto;
+	border-collapse:unset;
+	border-spacing: 0;
+
+  }
+  .table-wrap {
+	position: relative;
+  }
+
+
+.table-scroll th,
+.table-scroll td {
+	padding: 0px 5px;
+	border: 1px solid rgb(247, 244, 244);
+	position: relative;
+	font-size: 14px;
+	margin: 0 0 0px;
+	max-height: 0.5vw;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	vertical-align: central;
+	
+}
+.bootstrap-select.btn-group .btn .filter-option {
+	text-align: right
+}
+
+.table-scroll tr:nth-child(odd) {
+	background: #eeeef0;
+	border: 1px solid #000;
+	height: 32px;
+	max-height: 36px;
+}
+.table-scroll tr:nth-child(even), tr:nth-child(even) {
+	background: #eeeef0;
+	border: 1px solid #000;
+	height: 32px;
+	max-height: 36px;
+}
+.table-scroll tbody td {
+	
+	height: 40px;
+}
+.true {
+	opacity:0.9;
+	background: repeating-linear-gradient(-45deg,#ddd,#ddd 2px,#fff 2px,#fff 5px);
+	/*background: linear-gradient( 110deg,  #fdcd3b 60%, #ffed4b 60%);*/
+	/*filter: blur(1px);*/
+}
+.nowday {
+	border: 3px rgb(192, 0, 0);
+}
+.rowselected {
+	opacity: 0.5;
+	background: linear-gradient( 110deg, #fdcd3b 60%, #ffed4b 60%);
+}
+
+.select {
+	position:absolute;
+	z-index: 0;
+	font-size: 14px;
+	top: -10px;
+	left: 0px;
+	border-radius: 10%;
+}
+#load .div {
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+#btf div {
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	z-index: 1;
+	height: 15px;
+	width: 15px;
+	padding: 0.3vw 0.3vw;
+	background-color: lightsteelblue;
+	color: white;
+}
+#bts div {
+	position: absolute;
+	bottom: 2px;
+	right: 18px;
+	z-index: 1;
+	height:15px;
+	width:15px;
+	padding: 0.3vw 0.3vw;
+	background-color: lightsteelblue;
+	color: white;
+}
+#btm button {
+	position: absolute;
+	bottom: 2px;
+	left: 2px;
+	z-index: 1;
+	padding: 0.3vw 0.3vw;
+	border-radius: 50%;
+	background-color: goldenrod;
+	color: white;
+	opacity: 0.1;
+}
+#bth button {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	z-index: 1;
+	padding: 0.3vw 0.3vw;
+	border-radius: 50%;
+	background-color: blue;
+	color: white;	
+}
+#btfn button {
+	position: absolute;
+	top: 2px;
+	right: 28px;
+	z-index: 1;
+	padding: 0.3vw 0.3vw;
+	border-radius: 50%;
+	background-color: yellow;
+	color: black;
+}
+#btm button:hover {
+	opacity: 0.9;
+}
+.table-scroll thead th :hover ~#btm button {
+	opacity: 0.9;
+}
+.table-scroll tfoot th :hover ~#btm button {
+	opacity: 0.9;
+}
+#warn button {
+	position: absolute;
+	top: -1px;
+	left: 3px;
+	z-index: 1;
+	padding: 0.1vw 0.1vw;
+	border-radius: 50%;
+	background-color: coral;
+	color: white;
+	opacity: 0.4;
+}
+#warn button:hover {
+		background-color: #ffdb3a;
+		opacity: 0.9;
+}
+#btt button {
+	position:absolute;
+	top:-1px;
+	left:25px;
+	z-index: 1;
+	padding: 0.1vw 0.1vw;
+	border-radius: 50%;
+	background-color: red;
+	color: white;
+	opacity:0.4;
+}
+#btt button:hover {
+		background-color: #ffdb3a;
+		opacity: 0.9;
+}
+.table-scroll thead th {
+	z-index: 4;
+	background: #333;
+	color: #fff;
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0;
+	font-size: 12px;
+	max-height: 1vw;
+	text-align: center;
+}
+
+  
+  /* safari and ios need the tfoot itself to be position:sticky also */
+.table-scroll tfoot,
+.table-scroll tfoot th,
+.table-scroll tfoot td {
+	position: -webkit-sticky;
+	position: sticky;
+	bottom: 0;
+	background: #333;
+	color: #fff;
+	z-index: 4;
+	max-height: 1vw;
+	font-size: 12px;
+	text-align: center;
+}
+  
+  a:focus {
+	background: red;
+  } /* testing links*/
+
+.table-scroll th:first-child {
+	position: -webkit-sticky;
+	border: 1px solid rgb(133, 133, 133);
+	background: #fff;
+	margin: 0 0 0px;
+	position: sticky;
+	left: 0;
+	z-index: 2;
+	font-size: 11px;
+	text-align: center;
+	vertical-align: central;
+	cursor: pointer;
+}
+
+.table-scroll thead th:first-child,
+.table-scroll tfoot th:first-child {
+	z-index: 5;
+	background: #333;
+	color: #fff;
+	text-align: center;
+    min-width:150px;
+}
+select:focus {
+	background-color: yellow;
+}
+.ui-tabs .ui-tabs-focus {
+	background-color: yellow;
+}
+label {
+	display: block;
+	padding: .2vw;
+}
+  .outter {
+	display: flex;
+	justify-content: space-between;
+  }
+input:disabled {
+	pointer-events: none
+}
+
+#bt button:hover {
+	background-color: #ffdb3a;
+	color: black;
+}
+#bt button {
+	font-size: 15px;
+	top: 0px;
+	right: 5px;
+	height: 40px;
+	border-radius: 10%;
+	background-color: rgb(169, 167, 190);
+	color: white;
+	margin-right: 5px;
+}
+.onlyView {
+	text-decoration: solid;
+	color:cadetblue;
+}
+.Not_modified {
+	text-decoration: solid;
+}
+.Modified {
+	text-decoration:initial;
+	color:blue;
+}
+.Added {
+	color:green
+}
+.Deleted {
+	text-decoration: line-through;
+	color:red;
+}
+.box {
+	z-index: 5;
+	border-radius: 0px 4px 4px 0px;
+	right: 0px;
+	padding: 4px 4px 4px 0px;
+	position: fixed;
+	top: 0px;
+	width: 430px;
+}
+	.box:not(.nohover) {
+		right: -434px;
+		transition: transform 1s;
+	}
+	.box:not(.nohover):hover {
+		transform: translateX(-434px);
+	}
+
+	.box .box__content {
+		background: #fff;
+		border: solid rgb(169, 167, 190);		
+		padding: 10px;
+		position: relative;
+	}
+
+	.box .box__title {
+		border-radius: 0px 0px 4px 4px;
+		border-width: 0px 4px 4px;
+		cursor: default;
+		font-size: 18px;
+		height: 40px;
+		line-height: 30px;
+		position: absolute;
+		left: -220px;
+		text-align: left;
+		top: 0px;
+		width: 220px;
+	}
+
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
+@keyframes ldio-8t8zrd8oogv {
+	0% {
+		transform: rotate(0deg)
+	}
+
+	100% {
+		transform: rotate(360deg)
+	}
+}
+
+.ldio-8t8zrd8oogv > div > div {
+	transform-origin: 100px 100px;
+	animation: ldio-8t8zrd8oogv 3.0303030303030303s linear infinite;
+	opacity: 0.59
+}
+
+.ldio-8t8zrd8oogv > div > div > div {
+		position: absolute;
+		left: 30px;
+		top: 30px;
+		width: 70px;
+		height: 70px;
+		border-radius: 70px 0 0 0;
+		transform-origin: 100px 100px
+}
+
+.ldio-8t8zrd8oogv > div div:nth-child(1) {
+	animation-duration: 0.7575757575757576s
+}
+
+	.ldio-8t8zrd8oogv > div div:nth-child(1) > div {
+		background: #292664;
+		transform: rotate(0deg);
+	}
+
+.ldio-8t8zrd8oogv > div div:nth-child(2) {
+	animation-duration: 1.0101010101010102s
+}
+
+	.ldio-8t8zrd8oogv > div div:nth-child(2) > div {
+		background: #667395;
+		transform: rotate(0deg);
+	}
+.ldio-8t8zrd8oogv > div div:nth-child(5) {
+	animation-duration: 1.31111s
+}
+
+.ldio-8t8zrd8oogv > div div:nth-child(5) > div {
+	background: #FFCCCC;
+	transform: rotate(0deg);
+}
+
+.ldio-8t8zrd8oogv > div div:nth-child(6) {
+	animation-duration: 2.31111s
+}
+
+.ldio-8t8zrd8oogv > div div:nth-child(6) > div {
+	background: #FF7C80;
+	transform: rotate(0deg);
+}
+
+.ldio-8t8zrd8oogv > div div:nth-child(3) {
+	animation-duration: 1.5151515151515151s
+}
+
+	.ldio-8t8zrd8oogv > div div:nth-child(3) > div {
+		background: #94a9ce;
+		transform: rotate(0deg);
+	}
+
+.ldio-8t8zrd8oogv > div div:nth-child(4) {
+	animation-duration: 3.0303030303030303s
+}
+
+	.ldio-8t8zrd8oogv > div div:nth-child(4) > div {
+		background: #b5ccf1;
+		transform: rotate(0deg);
+	}
+
+.loadingio-spinner-wedges-3iosyu81upr {
+	width: 200px;
+	height: 200px;
+	display: inline-block;
+	overflow: hidden;
+	background: none;
+}
+
+.ldio-8t8zrd8oogv {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	transform: translateZ(0) scale(1);
+	backface-visibility: hidden;
+	transform-origin: 0 0; /* see note above */
+}
+
+	.ldio-8t8zrd8oogv div {
+		box-sizing: content-box;
+	}
+/* generated by https://loading.io/ */
+
+.item {
+	cursor: pointer;
+	padding-left: 10px;
+}
+
+.item.selected {
+	background-color: #1e91fc;
+	color: #fff;
+	cursor: move;
+}
+
+div.list {
+	display: inline-block;
+	vertical-align: top;
+	width: 300px;
+	max-width: 350px;
+}
+
+div.list ul.list {
+		max-height: 400px;
+		height: 400px;
+		overflow-y: scroll;
+}
+
+.list {
+	padding: 0;
+	background-color: #fafafa;
+	border: 1px solid #CCC;
+	list-style-type: none;
+	margin: 0;
+	font-size:large;
+}
+
+.list-manager {
+	position: relative;
+	display: table-cell;
+}
+
+.loading-overlay {
+	position: absolute;
+	line-height: 400px;
+	top: 0;
+	left: 0;
+	font-size: 25px;
+	width: 100%;
+	height: 100%;
+	background-color: #fafafa;
+	filter: opacity(90);
+	opacity: 0.9;
+	z-index: 100;
+	text-align: center;
+	vertical-align: middle;
+}
+.push-notification {
+	background-color: #000;
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	color: #fff;
+	padding: 15px 15px 15px 30px;
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background-repeat: no-repeat;
+	background-position: 7px center;
+	opacity: 0.7;	
+	vertical-align: middle;
+	box-shadow: 4px 4px 4px #000;
+	-webkit-box-shadow: 4px 4px 4px #000;
+	-moz-box-shadow: 4px 4px 4px #000;
+}
+.sidenav {
+	height: 100%;
+	width: 0;
+	position: fixed;
+	z-index: 10;
+	top: 0;
+	left: 0;
+	background-color: #111;
+	overflow-x: hidden;
+	transition: 0.5s;
+	padding-top: 60px;
+}
+
+	.sidenav a {
+		padding: 8px 8px 8px 32px;
+		text-decoration: none;
+		font-size: 25px;
+		color: #818181;
+		display: block;
+		transition: 0.3s;
+	}
+
+		.sidenav a:hover {
+			color: #f1f1f1;
+		}
+
+	.sidenav .closebtn {
+		position: absolute;
+		top: 0;
+		right: 25px;
+		font-size: 36px;
+		margin-left: 50px;
+	}
+
+@media screen and (max-height: 450px) {
+	.sidenav {
+		padding-top: 15px;
+	}
+
+		.sidenav a {
+			font-size: 18px;
+		}
+}
+.notifyjs-foo-base {
+	opacity: 0.95;
+	width: 200px;
+	background: yellow;
+	padding: 5px;
+	border-radius: 10px;
+}
+
+.notifyjs-foo-base .title {
+		width: 100px;
+		float: left;
+		margin: 10px 0 0 10px;
+		text-align: right;
+}
+
+.notifyjs-foo-base .buttons {
+		width: 70px;
+		float: right;
+		font-size: 9px;
+		padding: 5px;
+		margin: 2px;
+}
+
+.notifyjs-foo-base button {
+		font-size: 9px;
+		padding: 5px;
+		margin: 2px;
+		width: 60px;
+}
+.notifyjs-exchange-base {
+	opacity: 0.95;
+	width: 280px;
+	background: Lightgreen;
+	padding: 5px;
+	border-radius: 10px;
+}
+
+.notifyjs-exchange-base .title {
+		width: 250px;
+		float: left;
+		margin: 5px 0 0 5px;
+		text-align: left;
+}
+.Lred {
+	background: rgba(252, 20, 20, 0.9)
+}
+.Lgreen {
+	background: rgba(212, 255, 205, 0.9)
+}
+.Lneutral {
+	background: rgba(255, 255, 150, 1)
+}
+
+.scrolable {
+	overflow-y: auto;
+	max-width: 50vw;
+	max-height: 2.5vw;
+	position:relative;
+	top: 0%;
+	left: 0%
+}
+
+.main-container {
+	width: 100%;
+	padding: 0.4em;
+}
+
+.main-container,
+.select-container {	
+	position: relative;
+	max-height: 250px;
+	z-index: 50;
+}
+
+
+.select-container {
+	height: 2em;	
+}
+
+#select,
+	.select-container::after {
+		width: 100%;
+		height: 100%;
+	}
+
+.select-container::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		background: rgba(0,0,0,0);
+		display: block;
+}
+
+.options-container {
+	position: absolute;
+	top: 2em;
+	width: 100%;
+	border: 1px solid #A9A9A9;
+	background: #FFFFFF;
+	display: none;	
+}
+
+.options {
+	overflow-y: scroll;
+	max-height: 300px;
+}
+
+.options-container.shown {
+	display: block;	
+	max-height: 350px;
+}
+
+label {
+	display: block;
+	padding: .2em;
+	text-align: justify;
+}
+
+label:not(:last-child) {
+		border-bottom: 1px solid #FFFFFF;
+}
+
+.checked {
+	background: #568ECB;
+	color: white;
+}
+
+.button-container {
+	display: flex;
+	justify-content: flex-end;
+	border-top: 1px solid #A9A9A9;
+	background: #F6F6F6;
+}
+
+.button-container button {
+		margin: .4em;
+		margin-left: 0;
+}
+
+#logo-login {
+	padding: 6px 12px;
+	display: block;
+	background: url(images/HrnestBoss.svg) no-repeat;
+	width: 230px;
+	height: 38px;
+	text-indent: -9998px;
+}
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;	
+}
+
+#down {
+	
+}

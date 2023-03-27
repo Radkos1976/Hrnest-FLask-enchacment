@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    {% if title %}
+    <title style="text-align:center">{{ title }}</title>
+    {% else %}
+    <title style="text-align:center">Welcome to HrnestBoss</title>
+    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ url_for('static', filename='/content/bootstrap.min.css') }}" rel="stylesheet">
+
+</head>
+<body style="color: #fff; background-color: #333; -webkit-tap-highlight-color: rgba(0,0,0,0); ">    
+    <div class="dropdown show" style="background-color :cadetblue">
+        <a class="btn btn-secondary" role="button">
+            <div style="padding: 6px 12px; display: block; background: url(/static/content/images/HrnestBoss.svg) no-repeat; width: 230px; height: 38px; text-indent: -9998px;"></div>
+        </a>
+        {% if current_user.is_anonymous %}
+        <a href="{{ url_for('login') }}" class="btn btn-info" role="button" style="color: #333; background-color: #fff;">
+            Login
+        </a>
+        <a href="{{ url_for('register') }}" class="btn btn-info" role="button" style="color: #333; background-color: #fff;">
+            Register
+        </a>
+        {% else %}
+        <a href="{{ url_for('home') }}" class="btn btn-info" role="button" style="color: #333; background-color: #fff;">
+            HRNEST Boss
+        </a>
+        <a href="{{ url_for('logout') }}" class="btn btn-info" role="button" style="color: #333; background-color: #fff;">
+            Logout
+        </a>        
+        {% endif %}
+    </div>   
+    {% block content %}
+
+
+    {% endblock %}
+
+
+</body>
+</html>

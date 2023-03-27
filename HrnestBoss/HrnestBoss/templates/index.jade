@@ -1,0 +1,1164 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title= title
+    
+    link(rel='stylesheet', href='/static/content/style.css')
+    link(rel='stylesheet', type='text/css', href='/static/content/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='/static/content/jquery-ui.css')
+    link(rel='stylesheet' , type='text/css', href='/static/font-awesome/css/font-awesome.css')
+    
+
+    script(src='/static/scripts/modernizr-2.6.2.js')
+    script(src='/static/scripts/jquery-1.10.2.js', type='text/javascript')    
+    script(src='/static/scripts/jquery-ui.js', type='text/javascript')    
+    script(src='/static/scripts/bootstrap.js', type='text/javascript')
+    //script(src='/static/font-awesome/js/all.js', type='text/javascript')
+    script(src='/static/scripts/ko.js', type='text/javascript')
+    
+    //script(src='/static/scripts/tkoalpha.js', type='text/javascript')
+    //script(src='/static/scripts/jQuery-contextMenu-master/dist/jquery.contextMenu.min.js', type='text/javascript')
+    script(src='/static/scripts/socket.io.js', type='text/javascript')
+    script(src='/static/scripts/main.js', type='text/javascript')
+    script(src='/static/scripts/sortable.js', type='text/javascript')
+    script(src='/static/scripts/notify.min.js', type='text/javascript')
+    
+
+  body    
+    #load.div(style="display:none",data-bind="winsize: windowSize")
+
+      template#personMod
+        tr.justify-content-center(data-bind="inview:$data,foreach: { data:$root.LimitPerson_Name_Fields(), includeDestroyed: false , noChildContext: true}")
+            th(title='Select person for Edit',data-bind="conPersBody:$parent, css:$root.IsSelectedPER($parent)")
+               div(data-bind="css: $parent['attr']()")
+                <!-- ko if: $data['name']=='attr' -->             
+                span.ui-icon(data-bind="attr: {title:'Press For Undo Changes'},css:$root.Icon_enumerate($parent['attr']()),click:function() {$root.UndoPers($parent)}, clickBubble: false")
+                <!-- /ko -->
+                <!-- ko if: $data['name']!='attr' -->
+                <!-- ko if: $root.Is_enable($data['type'],$parent)==true -->
+                <!-- ko if: $root.isUserSelectedPER({id:$parent.Id,field:$data.name})==false -->
+                span(data-bind="visible: !$root.isUserSelectedPER({id:$parent.Id,field:$data.name})")
+                    #standard-select.p(data-bind="html:$parent[$data.name],attr: {title:'Press to edit Person data'},click:function() {$parent['attr']()!='Deleted'?$root.selPer({id:$parent.Id,field:$data.name,value:$parent[$data.name],data:$parent}):''}, clickBubble: false")
+                <!-- /ko -->
+                <!-- ko if: $parent['attr']()!='Deleted' -->
+                <!-- ko if: $root.isUserSelectedPER({id:$parent.Id,field:$data.name})==true -->
+                span(data-bind="visibleAndSelect: $root.isUserSelectedPER({id:$parent.Id,field:$data.name})")
+                    input(data-bind="value:$parent[$data.name],style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}, event: { blur:async function() { $root.clearUserPER({id:$parent.Id,field:$data.name}) }}")
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: $root.Is_enable($data['type'],$parent)!=true -->
+                p.onlyView(data-bind="html:$parent[$data['name']](),click:function() {$root.SelectPER($parent)},css:$parent['attr']()")
+                <!-- /ko -->
+                <!-- /ko -->
+      
+      template#personReq
+        tr.justify-content-center(data-bind="foreach: { data:$root.LimituserFrmRequests_Name_Fields(), includeDestroyed: false , noChildContext: true}")
+            th(title='Select request for Edit')
+                div(data-bind="css: $parent['attr']()")
+                    <!-- ko if: $data['name']=='attr' -->
+                    <!-- ko if: $root.Icon_enumerate($parent['attr']()) == 'ui-icon-blank' -->
+                    span.ui-icon.ui-icon-trash(data-bind="click: function() { $root.removeRequest($parent['number']())}, clickBubble: false,attr: {title:'Press for delete request'}") 
+                    <!-- /ko -->
+                    <!-- ko if: $root.Icon_enumerate($parent['attr']()) != 'ui-icon-blank' -->
+                    span.ui-icon(data-bind="attr: {title:'Press For Undo Changes'},css:$root.Icon_enumerate($parent['attr']()),click:function() {$root.UndoReq($parent)}, clickBubble: false")
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- ko if: $data['name']!='attr' -->                
+                    <!-- ko if: $parent['attr']()!='Deleted' -->
+                    <!-- ko if: $root.Is_enable($data['type'],$parent)==true -->  
+                    <!-- ko if: $data['name'].indexOf('date')>-1 -->
+                    input(data-bind="value:$parent[$data.name], event: {click:function() {return $parent['attr']()!='Deleted'?$root.selReq({number:$parent.number,field:$data.name,value:$parent[$data.name],data:$parent}):false}, change:async function() { $root.clearREQ({number:$parent.number,field:$data.name}) }},attr: {'min':$root.reqDF(),'max':$root.reqDT()}",type='date', name='Date')
+                    <!-- /ko -->
+                    <!-- ko if: $data['name'].indexOf('date')==-1 -->
+                    select(data-bind="options: $root.RequestOnlyEnumerable(),optionsText:'description', value:$parent[$data.name](), valueUpdate: 'afterkeydown'")
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- /ko -->                    
+                    <!-- ko if: $root.Is_enable($data['type'],$parent)!=true || $parent['attr']()=='Deleted'-->
+                    <!-- ko if: $data['name']!='description' -->
+                    p.onlyView(data-bind="html:$parent[$data['name']]()")
+                    <!-- /ko -->
+                    <!-- ko if: $data['name']=='description' -->
+                    p.onlyView(data-bind="html:$parent[$data['name']]().description()")
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- /ko -->
+
+
+      template#Field        
+        span(data-bind="visible: !$root.isUserSelected({id:$parent.id,field:$data.Full_date})")
+            #standard-select.p(data-bind="html:$parent[$data.Full_date],attr: {title:'Press to edit Person data'},css:$parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() ?'flash':'',click:async function() {$root.selectedUser({id:$parent.id,field:$data.Full_date})}, clickBubble: false")
+        span(data-bind="visibleAndSelect: $root.isUserSelected({id:$parent.id,field:$data.Full_date})")
+            input(data-bind="value:$parent[$data.Full_date],style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}, event: { blur:async function() { $root.clearUser({id:$parent.id,field:$data.Full_date}) }}")
+        <!-- ko if: $parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() --> 
+        #btt.notification(data-style="text-right")
+            button.fa.fa-undo(tabindex="-1",data-bind="attr: {title:'Undo Changes to value '+ $parent[$data.Full_date + 'old']},click: function() {$root.undo($data.Full_date,$parent['id'])},clickBubble: false")
+        <!-- /ko -->       
+      
+      template#Workgroup        
+        <!-- ko if: $data.Full_date!='table_wrkgroup' -->
+        p(data-bind="html: $parent[$data.Full_date]")
+        <!-- /ko -->
+        <!-- ko if: $data.Full_date=='table_wrkgroup' -->
+        select(data-bind="style: {width: $data.w() + 'px','max-width': $data.w() + 'px'},css:$parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() ?'flash':'opt' + $parent[$data.Full_date](),id:'standard-select',options:$root.workGroups,optionsText: 'name', value:$parent[$data.Full_date],click: function() {$root.multt_select($parent['id'],$data.Full_date)}, clickBubble: false")
+        {% if current_user.is_hrnest_access %}
+        <!-- ko if: $parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() --> 
+        #btt.notification(data-style="text-right")
+            button.fa.fa-undo(tabindex="-1",data-bind="attr: {title:'Undo Changes to value '+ $parent[$data.Full_date + 'old']},click: function() {$root.undo($data.Full_date,$parent['id'])},clickBubble: false")
+        <!-- /ko -->
+        {% endif %}
+        <!-- /ko -->        
+        
+      template#Main
+        p(data-bind="html: $parent[$data.Full_date]")
+      
+      template#Enabled
+        #standard-select.p(data-bind="html:$parent[$data.Full_date + 'req']() ? 'u' : $parent[$data.Full_date](),css:$parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() ?'flash':'opt'+ (!$parent[$data.Full_date + 'req']() ? $parent[$data.Full_date]():'u'),id:'standard-select'")
+        
+      template#Disabled
+        <!-- ko if: !$parent[$data.Full_date + 'req']() & $parent['guid']!='' || $parent['guid']=='' -->
+        select(data-bind="css:$parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() ?'flash':'opt' + (!$parent[$data.Full_date + 'req']() ? $parent[$data.Full_date]():'u'),id:'standard-select',options:$parent['guid']==''? $root.availableitems():$root.availableitemsWWW, value:$parent[$data.Full_date],click: function() {$root.multt_select($parent['id'],$data.Full_date)}, clickBubble: false")
+        <!-- /ko -->
+        <!-- ko if: $parent[$data.Full_date + 'req']() & $parent['guid']!='' -->
+        #standard-select.p(data-bind="html:'u',css:$parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() ?'flash':'opt'+ (!$parent[$data.Full_date + 'req']() ? $parent[$data.Full_date]():'u')")
+        <!-- /ko -->
+        {% if current_user.is_hrnest_access %}
+        <!-- ko if: $parent[$data.Full_date + 'old']!=$parent[$data.Full_date]() --> 
+        #btt.notification(data-style="text-right")
+           button.fa.fa-undo(tabindex="-1",data-bind="attr: {title:'Undo Changes to value '+ $parent[$data.Full_date + 'old']},click: function() {$root.undo($data.Full_date,$parent['id'])},clickBubble: false")
+        <!-- /ko -->
+        {% endif %}
+
+      template#Day        
+        div(data-bind="template: {name: $root.multiselect() }")
+        <!-- ko if: $root.alert_time($parent[$data.Full_date + 'err']) --> 
+        #warn.notification(data-style="text-right")
+            button.fa.fa-exclamation(data-bind="attr: {title: $root.TxtAlert($parent[$data.Full_date + 'err'],$index(),$parent['id'],$parent[$data.Full_date])}")
+        <!-- /ko -->        
+        
+      template#personTemplate        
+        <!-- ko if: $root.LimitTable_Name_Fields().length>0 & $root.pagedRows().length>0 & $root.message()!='Busy' -->
+        tr.justify-content-center(data-bind="vinview:$data ,foreach: { data:$root.LimitTable_Name_Fields(), includeDestroyed: false , noChildContext: true}, css:$root.selected(0,$data['id']) ")        
+          th(data-bind="template: {name: $data.Type, if: ($data.Type!='Main' && $parent.inView() && $data.inView()) || $data.Type=='Main'},attr: {title:$root.CalcTitle($index(),$parent['id'],$parent.inView() && $data.inView())},contMenuBody:$parent,click: function() {$root.multt_select($parent['id'],$index())},visible:$root.isVisInfo($data), clickBubble: false,style:$root.CalcStyle($index(),$parent['id'],$parent.inView() && $data.inView())")                        
+        <!-- /ko -->
+      
+      .outter
+          <!-- ko with: $root.Current_timetable() -->
+          .outter
+            button.ui-button.ui-widget.ui-corner-all.ui-button-icon-only(title='Press For Home Menu',onclick='openNav()')                        
+               span.ui-icon.ui-icon-home
+            <!-- ko if: !$root.Current_multiTimetables() -->
+            .outter
+                #logo-login.div
+                h4(data-bind="html: $root.Data_Type()=='Timetable'? 'Selected Timetable => ' + ($root.Current_multiTimetables() ? $root.CurrentselectedItemsStr() : title()):'Selected Draft => ' + title() ") 
+            <!-- /ko -->
+            <!-- ko if: $root.Current_multiTimetables() -->
+            .outter.center
+                #logo-login.div
+                h4(data-bind="html:'Selected Timetable =>_'")              
+                h5.scrolable(data-bind="html:$root.CurrentselectedItemsStr()")
+            <!-- /ko -->
+          <!-- /ko -->
+          {% if current_user.is_hrnest_access %}
+          #bt(data-bind="css:Multiselect_pin()?'nohover':''")            
+            div(data-bind="style:{'height': bindModes=='Select chosen days in week' ? 320:260 + SelectedReplaceMetod=='Copy Values From Person'?100:0 +'px'},css:multiselect()=='Enabled'?Multiselect_pin()?'box nohover':'box':''")                    
+              .box__content                
+                .box__description                  
+                  <!-- ko if: multiselect()=='Enabled' -->                  
+                  div(style="border: thin solid black")
+                    p
+                    p(style="text-align: center",title='Please Chose a selection mode') Chose Selection Mode : 
+                      select(data-bind="options: $root.availablemodes(), value:bindModes,valueUpdate: 'afterkeydown'",style="border: thin solid black")
+                    <!-- ko if: bindModes()=='Select chosen days in week' -->
+                    div(style="text-align: center")
+                      p
+                      <!-- ko foreach: weekday -->
+                      input.text-right(type="checkbox",data-bind="checkedValue: WeekDay, checked: $root.chosenDays",title='Chose days in the week') 
+                      span(data-bind="text:WeekDay")                        
+                      <!-- /ko -->
+                      button(data-bind="click:function() {$root.Inverse_days()}",title="Inverse selected days in week") Inverse
+                    <!-- /ko -->
+                  div
+                  input#flexSwitchCheckChecked.form-check-input(type='checkbox',data-bind='checked: SelectedAllcolumns',aria-describedby='btnGroupAddon',title="Enable Columns Selection by clicking Header")
+                  label.form-check-label(for='flexSwitchCheckDefault',title="Enable Columns Selection by clicking Header") Enable All Columns Selection 
+                            <!-- ko if: SelectedAllcolumns -->
+                            select(data-bind="options: $root.ColumnsSel(), value:AllColumnsSelection,valueUpdate: 'afterkeydown'",style="border: thin solid black",title="Select Range for Columns Selection")
+                            <!-- /ko -->
+                  div
+                  input#flexSwitchCheckChecked.form-check-input(type='checkbox',data-bind='checked: SelectedAllrows',aria-describedby='btnGroupAddon',title="Enable Rows Selection by clicking row in First Column")
+                  label.form-check-label(for='flexSwitchCheckDefault',title="Enable Rows Selection by clicking row in First Column") Enable All Rows Selection 
+                  <!-- ko if: SelectedAllrows -->
+                  div(style="border: thin solid grey")
+                      div(style="border: thin solid black,margin-right:20px,margin-left:20px ")
+                        p
+                        p(style="text-align: center",title='Please Chose a rows selection mode') Chose All rows Selection Mode : 
+                          select(data-bind="options: $root.AllRowsStrategy(), value:SelectedAllRowsStrategy,valueUpdate: 'afterkeydown'",style="border: thin solid black")
+                      input#flexSwitchCheckChecked.form-check-input(type='checkbox',data-bind="enable:$root.Data_Type()=='Timetable'?true:false, checked: AllRowsRange",aria-describedby='btnGroupAddon',title="Set Range of Dates for Selected Rows")
+                      label.form-check-label(for='flexSwitchCheckDefault',title="Set Range of Dates for Selected Rows") Limit All rows Selection in Date Range
+                            <!-- ko if: AllRowsRange -->
+                            select(data-bind="options: $root.TimeUnit(), value:AllRowsTimeUnit,valueUpdate: 'afterkeydown'",style="border: thin solid black",title="Select Time Unit")
+                            <!-- /ko -->                      
+                      <!-- ko if: AllRowsRange --> 
+                      p
+                      .outter
+                         <!-- ko if: AllRowsTimeUnit()!='Full date' -->
+                         <!-- ko with: $root.Current_timetable() -->
+                         input#date_to(title='Date From in ISO Week Format',data-bind="value:$root.AllRows_From,attr: {'min':Date_toHTML_Week(date_from()),'max':Date_toHTML_Week(date_to())}",type='week', name='Date To', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                         input#date_to(title='Date To in ISO Week Format',data-bind="value:$root.AllRows_To,attr: {'min':Date_toHTML_Week(date_from()),'max':Date_toHTML_Week(date_to())}",type='week', name='Date To', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                         <!-- /ko -->
+                         <!-- /ko -->
+                         <!-- ko if: AllRowsTimeUnit()=='Full date' -->
+                         <!-- ko with: $root.Current_timetable() -->
+                         input#date_to(title='Date From',data-bind="value:$root.AllRows_From,attr: {'min':date_from(),'max':date_to()}",type='date', name='Date To', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                         input#date_to(title='Date To',data-bind="value:$root.AllRows_To,attr: {'min':date_from(),'max':date_to()}",type='date', name='Date To', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                         <!-- /ko -->
+                         <!-- /ko -->
+                      <!-- /ko -->
+                  p
+                  <!-- /ko -->                  
+                  div(style="border: thin solid black")
+                    p
+                    p(style="text-align: center",title='Please select a replace mode') Chose Replace Metod: 
+                      select(data-bind="options: $root.ReplaceMetods(), value:SelectedReplaceMetod,valueUpdate: 'afterkeydown'",style="border: thin solid black")
+                    <!-- ko if: SelectedReplaceMetod()=='Replace Selected Value' --> 
+                    p
+                    p(style="text-align: center",title='Please select a symbol to replace in selected cells') Select Symbol to replace : 
+                      select(data-bind="options: $root.availableitems(), value:bindSelect,valueUpdate: 'afterkeydown'",style="border: thin solid black")                 
+                    <!-- /ko -->
+                    <!-- ko if: SelectedReplaceMetod()=='Copy Values From Person' -->
+                    p
+                    p(style="text-align: center",title='Chose Person for copy statuses') Please select Person :
+                      select(data-bind="options: $root.ListOfPersons(),optionsText:'full_name', value:CopyFromPerson, valueUpdate: 'afterkeydown'",style="border: thin solid black")
+                    <!-- /ko -->
+                    <!-- ko if: SelectedReplaceMetod()=='Change Time Calculation mode' -->
+                    p
+                    p(style="text-align: center",title='Chose Time Calculation mode') Please select Time Mode :
+                      select(data-bind="options: $root.RequestEnumerable(),optionsText:'description', value:selectedEnumerable, valueUpdate: 'afterkeydown'",style="border: thin solid black")
+                    <!-- /ko -->
+                  p
+                  p(style="text-align: center",title='Please choose what you want to do') Choose what you want to do
+                  p
+                  button.fa.fa-exchange(data-bind="click:function() {ReplaceItems()},html:'Replace selected'",style="height: 2vw;float: right;",title='Press to replace selected states')
+                  button.fa.fa-object-group(data-bind="click:function() {Unselect()},html:'Unselect All'",style="height: 2vw;float: right;",title='Press to Unselect ALL Selection')
+                  button.fa.fa-object-group(data-bind="click:function() {multi()},html:'Disable Tool'",style="height: 2vw;float: right;",title='Press to disable selection tool')                
+                  <!-- /ko --> 
+                .box__title
+                  .outter  
+                    button.fa.fa-object-group(data-bind="click:function() {multi()},html:'Selection Tool :' + multiselect()",title='Press to enable/disable selection tool') 
+                    <!-- ko if: multiselect()=='Enabled' --> 
+                    button.ui-button.ui-widget.ui-corner-all.ui-button-icon-only(title='Pin / UnPin Menu',data-bind="click:function(){Change_Pin()}")
+                        <!-- ko if: Multiselect_pin()!=true -->
+                        span.ui-icon.ui-icon-pin-w
+                        <!-- /ko -->
+                        <!-- ko if: Multiselect_pin()==true -->
+                        span.ui-icon.ui-icon-pin-s
+                        <!-- /ko --> 
+                    <!-- /ko -->
+          {% endif %}        
+      .outter       
+        #NAV.btn-toolbar.mb-3(role='toolbar')           
+            #NAV.btn-group.btn-light(role="group",aria-label='Info')
+            button.btn.btn-light(title='Press for change Timetable and dataset range settings',type='button',data-bind="click:function() {$root.get_dat()},html:$root.Data_Type()!='Timetable'? '<b>You are in Draft Mode</b>':'<b>Data for the period from: '+ valid_date_from() + ' to: ' + valid_date_to() + ' </b>  <i>          Refresh date:' + emp_sta_refr() + '</i>'")
+        #NAV.btn-toolbar.mb-3(role='toolbar',data-bind="visible:$root.ColumnPages().length>1?true:false")
+            #NAV.btn-group.btn-light(role="group",aria-label='Navigate')               
+                button.btn.btn-light(type='button',data-bind="enable:false") Chose Date Ranges
+                select.btn-primary(onchange="showLoader()",data-bind="options: $root.ColumnPages(), optionsText:'name', value:selectedColumns,valueUpdate: 'afterkeydown'",title="Change Visible Weeks Range")
+        #NAV.btn-toolbar.mb-3(role='toolbar')            
+            #NAV.btn-group.mr-2(role="group",aria-label='Header') 
+                #NAV.input-group.form-check.form-switch
+                    input#flexSwitchCheckChecked.form-check-input(title='Press for Enable / Disable summary of shifts Info',type='checkbox',data-bind='checked: ShiftSumm,event: { change:function() {$root.NotifyErr()}}',aria-describedby='btnGroupAddon')
+                    label.form-check-label(for='flexSwitchCheckDefault',title='Press for Enable / Disable summary of shifts Info') Summary Shifs                            
+            #NAV.btn-group.btn-light(role="group",aria-label='Header')
+                button.btn.btn-light(type='button',data-bind="enable:false",title='Chose information type on Header') Select Header Fields 
+                select.btn-primary(data-bind="options: fott_view(), value:headerSelected,valueUpdate: 'afterkeydown'")
+
+      #table-scroll.table-scroll(style="border: thin solid black")
+        div.loading-overlay(data-bind="visible:actingOnThingsT")
+                    span.fa.fa-spin.fa-spinner
+                    |  Please Wait For Data about Selected Timetable...
+        <!-- ko if: $root.message()!='Busy' -->
+        table.table-vcenter.main-table(id="main-table")          
+          thead             
+            tr(data-bind="foreach: { data: LimitTable_Name_Fields(), includeDestroyed: false ,  noChildContext: true}")
+              th(scope="col",data-bind="hinview:$data,contMenu:$data, resizable:$data ,visible:$root.isVisInfo($data), style:{'background-color':$root.h_color($index()),border: $root.colgroup_set($index()) ,color:$root.f_color($index())},click: function() {$root.Column_selection($index())}, clickBubble: false")
+                  div
+                    <!-- ko if: $data.Type!='Workgroup' -->
+                    #standard-select.p(data-bind="html: $data[$root.headerSelected()].toString().replace('_',' ').toUpperCase() +  $root.Shift_Info($index()),style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")
+                    <!-- /ko -->
+                    <!-- ko if: $data.Type=='Workgroup' -->
+                    p(data-bind="html: $data[$root.headerSelected()].toString().replace('_',' ').toUpperCase() +  $root.Shift_Info($index()) ,style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")
+                    <!-- /ko -->
+                    <!-- ko if: $data[$root.headerSelected()]=='full_name' -->
+                    .outter                        
+                        #btfn.notification
+                            button.fa.fa-exclamation-circle(tabindex="-1",data-bind="visible:$root.CheckLimitLicences()>0, attr: {title:'Some Shifts have exceeded the number of licenses => Number errors : '+ $root.CheckLimitLicences()},clickBubble: false")                       
+                        #bth.notification
+                            button.fa.fa-info-circle(tabindex="-1",data-bind="attr: {title:'Show/Hide Informational fields'},click:function() {$root.Info()},clickBubble: false")
+                    <!-- /ko -->
+                    <!-- ko if: $data[$root.headerSelected()] == $parent.sortKey() -->
+                    #bts.notification
+                        div(data-bind="css: $parent.ActiveSortKey() == 1 ? 'asc' : 'desc'")
+                    <!-- /ko -->
+                    <!-- ko if: $parent.filtered($data[$root.headerSelected()].toString())=='true' -->
+                    #btf.notification
+                        div.filter
+                    <!-- /ko -->
+                    <!-- ko if: $data.Type!='Day' -->
+                    #btm.notification
+                        button.fa.fa-bars(tabindex="-1",data-bind="attr: {title:'Right Click or Press button for Sort/Filter menu'},click:function() {$root.OpenMenuClick($element,$data)},clickBubble: false")
+                    <!-- /ko -->
+              <!-- ko if: $index()==$root.LimitTable_Name_Fields().length-1 -->
+              th(data-bind="style: { width: $root.NullBodyV() + 'px' ,'background-color':'white'}")
+              <!-- /ko -->          
+          tbody(data-bind="template: {name: 'personTemplate', foreach: $root.pagedRows()}") 
+          tbody
+            tr(data-bind="contMenuBody:'none',style: { height: $root.NullBodyH() + 'px'}")                
+          tfoot            
+            tr(data-bind="foreach: { data: LimitTable_Name_Fields(), includeDestroyed: false ,  noChildContext: true}")
+              th(scope="col",data-bind="contMenu:$data,resizable:$data,visible:$root.isVisInfo($data), style:{'background-color':$root.h_color($index()),color:$root.f_color($index())},click: function() {$root.Column_selection($index())}, clickBubble: false" )
+                <!-- ko if: $data.Type!='Workgroup' -->
+                #standard-select.p(data-bind="html: $data[$root.fottSelected()].toString().replace('_',' ').toUpperCase(),style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")
+                <!-- /ko -->
+                <!-- ko if: $data.Type=='Workgroup' -->
+                p(data-bind="html: $data[$root.fottSelected()].toString().replace('_',' ').toUpperCase(),style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")
+                <!-- /ko -->
+                <!-- ko if: $data[$root.headerSelected()] == $parent.sortKey() -->
+                #bts.notification
+                        div(data-bind="css: $parent.ActiveSortKey() == 1 ? 'asc' : 'desc'")
+                <!-- /ko -->
+                <!-- ko if: $parent.filtered($data[$root.headerSelected()].toString())=='true' -->
+                #btf.notification
+                        div.filter
+                <!-- /ko -->
+                <!-- ko if: $data.Type!='Day' -->
+                #btm.notification
+                        button.fa.fa-bars(tabindex="-1",data-bind="attr: {title:'Right Click or Press button for Sort/Filter menu'},click:function() {$root.OpenMenuClick($element,$data)}")
+                <!-- /ko --> 
+              <!-- ko if: $index()==$root.LimitTable_Name_Fields().length-1 -->
+              th(data-bind="style: { width: $root.NullBodyV() + 'px','background-color':'white'}")
+              <!-- /ko -->
+         <!-- /ko -->       
+      .outter        
+          #bt
+            {% if current_user.is_hrnest_access %}
+            button.fa.fa-save(title='Press for Apply all changes',data-bind="enable:Count_Changes()>0?true:false,click:function(data, event) {$root.showMenuChanges(event)},style:{'background-color':Count_Changes()>0?'plum':''}") Save Changes            
+            {% endif %}
+            button.fa.fa-refresh(data-bind="enable:Count_Changes()>0?true:false,click:function(data, event) {$root.get_recrdset()}",title='Press for Requery data') Refresh Data
+          #NAV.btn-toolbar.mb-3(role='toolbar')
+            #NAV.btn-group.btn-light(role="group",aria-label='Info')
+                {% if current_user.is_hrnest_access %}
+                button.btn.btn-light(title='Press to see all changes',type='button',data-bind="enable:false,style:{border: 'thin solid black','background-color':Count_Changes()>0?'plum':''},text: 'Changes for ' + Count_Changes() +' items'") 
+                {% endif %}
+            #NAV.btn-group.btn-light(role="group",aria-label='Navigate')
+                button.btn.btn-light(type='button',onclick="PreviousPage()" ,data-bind='visible: $root.pageIndex() > 0',title='Previous Page of rows') Previous Page
+                button.btn.btn-light(type='button',onclick="NextPage()" ,data-bind='visible: $root.pageIndex() < $root.maxPageIndex()',title='Next Page of rows') Next Page 
+                button.btn.btn-light(type='button',data-bind="enable:false") Rows per Page
+                select.btn-primary(onchange="showLoader()",data-bind="options: itemscOunt(), value:pageSize,valueUpdate: 'afterkeydown'",title="Set how many rows are visible in one page => Decrease the quantity of rows for efficiency")
+          #NAV.btn-toolbar.mb-3(role='toolbar')
+            #NAV.btn-group.btn-light(role="group",aria-label='Header')
+                button.btn.btn-light(type='button',data-bind="enable:false",title='Select type of information') Select Fotter Fields                 
+                select(data-bind="options: fott_view(), value:fottSelected,valueUpdate: 'afterkeydown'")
+    #dialog-message.no-close(title='Loading...',style="display:none")
+      #logo-login.div
+      span.ui-icon.ui-icon-circle-check(style='float:left; margin:0 7px 50px 0;',title='Mmm... be patient')
+      |     Please Wait To Load Data.
+      p(title='Mmm... be patient')
+        .loadingio-spinner-wedges-3iosyu81upr
+          .ldio-8t8zrd8oogv
+            div
+              div
+                div
+              div
+                div
+              div
+                div
+              div
+                div
+              div
+                div
+              div
+                div
+      #mes.a(data-bind="html:message() + txt()")
+    #dialog-form.modal.fade.in(tabindex="-1", role="dialog",data-keyboard='false', data-backdrop='static', aria-labelledby="myModalLabel", aria-labelledby="myModalLabel", aria-hidden="true")
+        .modal-dialog(style='min-width:800px;')
+           .modal-content(title='Please Select a date ranges ') Select Source Data
+              #tabs.div
+                .outter
+                    #logo-login.modal-header    
+                    a.fa.fa-sign-out(href='/logout' role='button') Logout
+                p
+                {% if current_user.is_hrnest_access %}
+                ul
+                    li
+                        a(href='#tabs-1',title='Get data from Timetable') Timetable
+                    
+                    li
+                        a(href='#tabs-2',title='Get data from Draft') Drafts
+                    li
+                        a(href='#tabs-3',title='Export Draft to New Timetable') Create Timetables From Draft                   
+                    li(data-bind="visible:$root.persDbview().length>0 & $root.Data_Type()=='Draft' & $root.NamingSettings()")
+                        a(href='#tabs-4',title='Settings Names for new Timetables') Naming Settings
+                {% endif %}
+                   
+                div.loading-overlay(data-bind="visible:actingOnThingsP")
+                    span.fa.fa-spin.fa-spinner
+                    |  Please Wait For Data ...
+                #tabs-1.div 
+                  .modal-body
+                    .outter
+                        p Select Active Timetable
+                        div
+                            input.text-right.form-check-label(type="checkbox",data-bind="checked: $root.multiTimetables",title='Enable Multi-Select of Timetables')
+                            label.form-check-label(for='flexSwitchCheckDefault',title='Press for Enable / Disable summary of shifts Info') Enable Multi-Select of Timetables
+                    <!-- ko if: $root.TimetabList().length>0 -->
+                    <!-- ko if: !$root.multiTimetables() -->
+                    select#timetable(title='Chose Timetable by Name',data-bind="id:'standard-select',options: $root.filterTimetableList(),optionsText: 'title',optionsAfterRender: setOptionTimeCond, value:tmpCurrent_timetable,click:function() {setTimeout(async function () {viewModel.tmpupdate_ranges()},100)}",type='Select',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                    <!-- /ko -->
+                    <!-- ko if: $root.multiTimetables() -->
+                    .main-container#timetable(data-bind:"title:[selectedItemsStr()]")
+                      .select-container(data-bind='click: toggleOptions')
+                        select#select(data-bind='options: [selectedItemsStr()]')
+                      .options-container(data-bind="css: { 'shown': optionsShown }")
+                        .options(data-bind='foreach: filterTimetableList')
+                          div(data-bind="css: { 'checked': Checked },'click: toggleOptions'")
+                            label                            
+                               input(type='checkbox' data-bind='checked: Checked')
+                               span(data-bind="text: title")
+                        .button-container                          
+                          button(type='button' data-bind='click: confirmSelection') OK
+                          button(type='button' data-bind='click: closeOptions') Cancel
+                    <!-- /ko -->
+                    p
+                    | Chose a range of dates: 
+                    input.form-check-input(title='Set ranges of data in timetable ?',type='checkbox',aria-label='Left Align', data-bind='checked: Frange')
+                    p
+                    <!-- ko if: $root.Frange -->                    
+                    label(for= "timetable",style='display:block;') Please select time unit 
+                            select#timetable(title='Set present Timetable unit for ranges',data-bind="id:'standard-select',options: $root.TimeUnit(), value:SelectedTimeUnit,click:function() {setTimeout(async function () {viewModel.tmpupdate_ranges()},100)}",type='Select',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                    <!-- /ko -->
+                    <!-- ko with: $root.tmpCurrent_timetable() -->
+                    <!-- ko if: !$root.multiTimetables() -->
+                    p(data-bind="html: 'Selected :' + title() ")
+                    <!-- /ko -->
+                    <!-- ko if: $root.multiTimetables() -->
+                    p(data-bind="html: 'Selected :' + [$root.selectedItemsStr()] ")
+                    <!-- /ko -->
+                    p(data-bind="html: 'Range dates From ' + date_from() + ' to ' + date_to()")                    
+                    form(data-bind= "visible:$root.Frange")                                                                             
+                            label(for="date_from" ,style='display:block;',data-bind= "visible:$root.Frange") Date From
+                            <!-- ko if: $root.SelectedTimeUnit()=='Full date' -->
+                            input#date_from(data-bind="value:$root.tmpvalid_date_from, visible:$root.Frange ,attr: {'min':date_from,'max':date_to}",type='date', name='Date From', style='display:block; margin-bottom:12px; width:95%; padding: .4em;') 
+                            <!-- /ko -->
+                            <!-- ko if: $root.SelectedTimeUnit()=='ISO week' -->
+                            input#date_from(data-bind="value:$root.tmpvalid_date_from, visible:$root.Frange ,attr: {'min':Date_toHTML_Week(date_from()),'max':Date_toHTML_Week(date_to())}",type='week', name='Date From', style='display:block; margin-bottom:12px; width:95%; padding: .4em;') 
+                            <!-- /ko -->
+                            label(for="date_to",style='display:block;',data-bind= "visible:$root.Frange") Date To
+                            <!-- ko if: $root.SelectedTimeUnit()=='Full date' -->
+                            input#date_to(data-bind="value:$root.tmpvalid_date_to,visible:$root.Frange,attr: {'min':date_from,'max':date_to}",type='date', name='Date To', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                            <!-- /ko -->
+                            <!-- ko if: $root.SelectedTimeUnit()=='ISO week' -->
+                            input#date_to(data-bind="value:$root.tmpvalid_date_to,visible:$root.Frange,attr: {'min':Date_toHTML_Week(date_from()),'max':Date_toHTML_Week(date_to())}",type='week', name='Date To', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                            <!-- /ko -->
+                    <!--/ko -->
+                    <!-- ko ifnot: $root.Frange -->
+                    h3
+                    i Date range is disabled , be careful too much data can slow down the interface
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- ko if: $root.TimetabList().length==0 -->
+                    h3 No Timetables Please Create it First
+                    <!-- /ko -->
+                {% if current_user.is_hrnest_access %}
+                #tabs-2.div 
+                  .modal-body 
+                    <!-- ko if: $root.AddNewDraft()==false -->
+                    <!-- ko if: $root.TimetabList().length>0 -->
+                    p Select Active Draft 
+                    table.table-vcenter
+                      tbody
+                        tr
+                          th(style='width:70%',title='Name of new draft')
+                            select#timetable(title='Chose Timetable by Name',data-bind="id:'standard-select',options: $root.TimetabList(),optionsText: 'title',optionsAfterRender: setOptionTimeCond, value:tmpCurrent_timetable,click:function() {setTimeout(async function () {viewModel.tmpupdate_ranges()},100)}",type='Select',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                          th(style='width:15%',title='Name of new draft')
+                            button.ui-button.ui-widget.ui-corner-all.ui-button-icon-only(title='Create draft',data-bind="click:function(){$root.AddNewDraft(!$root.AddNewDraft())}",type='button',style='display:block; margin-bottom:12px; width:30px; height:30px; padding: .4em;')
+                                span.ui-icon.ui-icon-circle-plus
+                          th(style='width:15%',title='Name of new draft')
+                            button.ui-button.ui-widget.ui-corner-all.ui-button-icon-only(title='Delete Selected draft',data-bind="click:function(){$root.DeleteSelectedDraft()}",type='button',style='display:block; margin-bottom:12px; width:30px;height:30px; padding: .4em;')
+                                span.ui-icon.ui-icon-trash                    
+                    <!-- /ko -->
+                    <!-- ko if: $root.TimetabList().length==0 -->
+                    p No Drafts in Database
+                    div
+                         button.ui-button.ui-widget.ui-corner-all(title='Create draft',data-bind="click:function(){$root.AddNewDraft(!$root.AddNewDraft())}",type='button',style='display:block; margin-bottom:12px; padding: .4em;')                         
+                            span.ui-icon.ui-icon-circle-plus 
+                            | Create First Draft
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- ko if: $root.AddNewDraft()==true -->
+                    p Create New Draft
+                    table.table-vcenter
+                        thead        
+                            tr
+                                th(style='width:70%',title='Name of new draft') Name of New Draft
+                                th(style='width:20%',title='Number of weeks in draft') Number Weeks
+                        tbody
+                            tr 
+                                th(style='width:70%',title='Name of new draft')
+                                    input(data-bind="value:$root.New_Name_of_Draft",style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                                th(style='width:20%',title='Number of weeks in draft')
+                                    input(type='numeric',style='display:block; margin-bottom:12px; width:95%; padding: .4em;',data-bind="value:$root.Number_of_weeks" )
+                    .outter
+                      div
+                      div
+                       .outter
+                        button.ui-button.ui-widget.ui-corner-all(type='butt',title='Cancel',data-bind="click:function(){$root.AddNewDraft(!$root.AddNewDraft())}",type='button',style='display:block; margin-bottom:12px; padding: .4em;')                         
+                            span.ui-icon.ui-icon-cancel 
+                            | Cancel
+                        button.ui-button.ui-widget.ui-corner-all(type='butt',title='Create draft',data-bind="click:function(){$root.CreateNewDraft()}",type='button',style='display:block; margin-bottom:12px; padding: .4em;')                         
+                            span.ui-icon.ui-icon-circle-plus 
+                            | Create Draft
+                    <!-- /ko -->
+                #tabs-3.div
+                  .modal-body 
+                    <!-- ko if: $root.TimetabList().length==0 -->
+                    p Create New Timetable From Draft
+                    h3 No Drafts in Database
+                    <!-- /ko -->
+                    <!-- ko if: $root.TimetabList().length>0 -->                    
+                    table.table-vcenter
+                      thead
+                        tr
+                          th
+                            p Select Source Draft
+                          th
+                          <!-- ko if: $root.weeksInDraft().length>0 -->
+                          th
+                            p Start Draft from Week
+                          <!-- /ko -->
+                      tbody
+                        tr
+                          th(style='width:50%',title='Name of new draft')
+                            select#timetable(title='Chose Timetable by Name',data-bind="id:'standard-select',options: $root.TimetabList(),optionsText: 'title',optionsAfterRender: setOptionTimeCond, value:tmpCurrent_timetable,click:function() {setTimeout(async function () {viewModel.tmpupdate_ranges()},100)}",type='Select',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                          th(style='width:25%',title='Name of new draft')
+                            button.ui-button.ui-widget.ui-corner-all(title='Load draft',data-bind="click:function() {$root.tmpStart_refr()}",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                span.ui-icon.ui-icon-circle-check 
+                                | Load Draft
+                          <!-- ko if: $root.weeksInDraft().length>0 -->
+                          th(style='width:25%',title='Start Week')
+                            select#timetable(title='Select Start Week',data-bind="id:'standard-select',options: weeksInDraft, value:StartWeek",type='Select',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                          <!-- /ko -->
+                    <!-- /ko -->             
+                    <!-- ko if: $root.Data_Type()=='Draft' -->
+                    <!-- ko if: $root.persDbview().length==0 -->
+                    h3 Selected Draft is Empty
+                    <!-- /ko -->
+                    <!-- ko if: $root.persDbview().length>0 -->
+                    p
+                    | Create more than one Timetable using NamingSettings Rules: 
+                    input.form-check-input(title='Create many Timetables at once using naming rules from selected Draft ?',type='checkbox',aria-label='Left Align', data-bind='checked: NamingSettings')
+                    h3(data-bind="text: 'Loaded Draft => ' + $root.Current_timetable().title() ")
+                    p Please Select Main Name for all Created Timetables
+                    input(data-bind="value:$root.Name_of_Created_Draft,attr: {title:$root.NamingSettings()?'Set Base Name for New Timetables':'Set name of New Timetable'}",style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                    p Date Ranges For All Timetables
+                    .outter 
+                         input#date_from(title='Date From for created Set',data-bind="value:$root.FDdateDraft ",type='date', name='Date From', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                         input#date_to(title='Date To for created Set',data-bind="value:$root.TDdateDraft ",type='date', name='Date From', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                    <!-- /ko -->
+                    p(data-bind="html:'Create New Timetables => {' + $root.calculateTablesNames().join(', ') + '}'")
+                    <!-- /ko -->                    
+                  <!-- ko if: $root.Data_Type()=='Draft' -->
+                  <!-- ko if: $root.persDbview().length>0 -->
+                  <!-- ko if: !$root.NamingSettings() -->
+                  button.ui-button.ui-widget.ui-corner-all(title='Create Timetable',data-bind="visible:allInputEnered,click:function() {$root.CreateTimetable()}",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                span.ui-icon.ui-icon-circle-check 
+                                | Create Timetable
+                  <!-- /ko -->
+                  <!-- ko if: $root.NamingSettings() -->                  
+                  button.ui-button.ui-widget.ui-corner-all(title='Create Timetables',data-bind="visible:allInputEnered,click:function() {$root.CreateTimetable()}",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                span.ui-icon.ui-icon-circle-check 
+                                | Create Timetables By Naming Settings
+                  <!-- /ko -->
+                  <!-- /ko -->
+                  <!-- /ko -->
+                #tabs-4.div
+                  .modal-body
+                    <!-- ko if: $root.TimetabList().length==0 -->                    
+                    h3 No Drafts in Database
+                    p Please Create New Timetable From Draft
+                    <!-- /ko -->
+                    <!-- ko if: $root.TimetabList().length>0 -->
+                    p(data-bind="html:'Text Rules for New Timetables => {' + $root.calculateTablesNames().join(', ') + '}'")
+                    table.table-vcenter(style="border: thin solid black")
+                      thead
+                        tr
+                            th(style='margin-bottom:12px; width:45%;min-width:320px; padding: .4em;border: thin solid black')
+                                p Text Rules on Prefix
+                            th(style='margin-bottom:12px; width:45%;min-width:320px; padding: .4em;border: thin solid black')
+                                P Text Rules on Sufix
+                      tbody(data-bind="foreach: { data: $root.namingsTable(), includeDestroyed: false ,  noChildContext: true}")
+                        tr
+                            th(style='margin-bottom:12px; width:45%;min-width:320px; padding: .4em;border: thin solid black')
+                                <!-- ko if: $data['Prefix']!=null -->
+                                <!-- ko if: $data['Prefix']['name']=='AddNEW' -->
+                                button.ui-button.ui-widget.ui-corner-all(title='Press for New Function',data-bind="click:function() {$root.addNamingFieldP()},clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                    span.ui-icon.ui-icon-circle-arrow-e
+                                    | Add rule for Prefix
+                                <!-- /ko -->
+                                <!-- ko if: $data['Prefix']['name']!='AddNEW' -->
+                                span(data-bind="visible: !$root.isRowSelected({id:$data.id,field:'Prefix'}),click:function() {$root.selectedRow({field:'Prefix' , id: $data.id})}")
+                                    .outter
+                                        #standard-select.p(data-bind="html:$data['Prefix']['name'] + ' => <br />  (' + $data['Prefix']['value1'] + ' , ' + $data['Prefix']['value2'] + ')'")
+                                        button.ui-button.ui-widget.ui-corner-all(title='Erase Selected',data-bind="click:$parent.removeNamingFieldP ,clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                            span.button.ui-icon.ui-icon-trash
+                                            | Erase Item
+                                <!-- ko if: $root.isRowSelected({id:$data.id,field:'Prefix'}) -->
+                                span(data-bind="visible: $root.isRowSelected({id:$data.id,field:'Prefix'}), event: { blur:async function() { $root.clearselectedRow({field:'Prefix' , id: $data.id}) }}")
+                                    .outter
+                                        p(data-bind="html:$data.Prefix.description")
+                                        button.ui-button.ui-widget.ui-corner-all(title='Erase Selected',data-bind="click:$parent.removeNamingFieldP ,clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                            span.button.ui-icon.ui-icon-trash
+                                            | Erase                                        
+                                    p Select Function
+                                        select#timetable(title='Chose Function',data-bind="id:'standard-select',options: $root.NamesFunctions(), value:$data.Prefix.name,valueUpdate: 'afterkeydown',event:{ change:function(){ $root.updateTypeFlds($data.id,'Prefix')}},clickBubble: false",type='Select',style='display:block; margin-bottom:12px; width:150px; padding: .4em;')
+                                    <!-- ko if: $data['Prefix']['type'].indexOf('function')>-1 -->    
+                                    p First Field
+                                        select#timetable(title='Chose Function',data-bind="id:'standard-select',options: $root.ListOfFieds(), value:$data.Prefix.value1,valueUpdate: 'afterkeydown',event:{ change: function(){ $root.updateFlds($data.id,'Prefix')}},clickBubble: false",type='Select',style='display:block; margin-bottom:12px; width:150px; padding: .4em;')       
+                                    <!-- /ko -->
+                                    <!-- ko if: $data['Prefix']['type'].indexOf('function')==-1 -->
+                                    <!-- ko if: $data['Prefix']['type'].indexOf('char')==-1 -->
+                                    p Type String
+                                        input#timetable(title='Chose Function',data-bind="id:'standard-select', value:$data.Prefix.value1,valueUpdate: 'afterkeydown',event:{ change:function(){$root.updateFlds($data.id,'Prefix')}},clickBubble: false",type='numeric',style='display:block; margin-bottom:12px; width:95%; padding: .4em;',')
+                                    <!-- /ko -->
+                                    <!-- /ko -->
+                                    <!-- ko if: $data['Prefix']['type'] == 'function' -->
+                                    p Second Field
+                                        select#timetable(title='Chose Function',data-bind="id:'standard-select',options: $root.ListOfFieds(), value:$data.Prefix.value2,valueUpdate: 'afterkeydown',event:{ change:function(){$root.updateFlds($data.id,'Prefix')}},clickBubble: false",type='Select',style='display:block; margin-bottom:12px; width:150px; padding: .4em;')  
+                                    <!-- /ko -->
+                                    <!-- ko if: $data['Prefix']['type'] == 'txtfunction' -->
+                                    p Number of chars
+                                        input#timetable(title='Chose Function',data-bind="id:'standard-select', value:$data.Prefix.value2,valueUpdate: 'afterkeydown',event:{ change:function(){ $root.updateFlds($data.id,'Prefix')}},clickBubble: false",type='numeric',style='display:block; margin-bottom:12px; width:95%; padding: .4em;',')  
+                                    <!-- /ko -->
+                                    .outter
+                                        div
+                                        button.ui-button.ui-widget.ui-corner-all(title='Apply Changes',data-bind="click:function() { $root.clearselectedRow({field:'Prefix' , id: $data.id}) },clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                            span.button.ui-icon-arrowrefresh-1-w
+                                            | Apply
+                                <!-- /ko -->
+                                <!-- /ko -->
+                                <!-- /ko -->   
+                            th(style='margin-bottom:12px; width:45%;min-width:320px; padding: .4em;border: thin solid black')
+                                <!-- ko if: $data['Sufix']!=null -->
+                                <!-- ko if: $data['Sufix']['name']=='AddNEW' -->
+                                button.ui-button.ui-widget.ui-corner-all(title='Press for New function',data-bind="click:function() {$root.addNamingFieldS()},clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                    span.ui-icon.ui-icon-circle-arrow-e
+                                    | Add rule for sufix
+                                <!-- /ko -->
+                                <!-- ko if: $data['Sufix']['name']!='AddNEW' -->
+                                span(data-bind="visible: !$root.isRowSelected({id:$data.id,field:'Sufix'}),click:function() {$root.selectedRow({field:'Sufix' , id: $data.id})}")
+                                    .outter
+                                        #standard-select.p(data-bind="html:$data['Sufix']['name'] + ' => <br />  (' + $data['Sufix']['value1'] + ' , ' + $data['Sufix']['value2'] + ')'")
+                                        button.ui-button.ui-widget.ui-corner-all(title='Erase Selected',data-bind="click:$parent.removeNamingFieldS ,clickBubble: false,clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                            span.button.ui-icon.ui-icon-trash
+                                            | Erase Item
+                                <!-- ko if: $root.isRowSelected({id:$data.id,field:'Sufix'}) -->
+                                span(data-bind="visible: $root.isRowSelected({id:$data.id,field:'Sufix'}), event: { blur:async function() { $root.clearselectedRow({field:'Sufix' , id: $data.id}) }}")  
+                                    .outter
+                                        p(data-bind="html:$data.Sufix.description")
+                                        button.ui-button.ui-widget.ui-corner-all(title='Erase Selected',data-bind="click:$parent.removeNamingFieldS ,clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                            span.button.ui-icon.ui-icon-trash
+                                            | Erase
+                                    p Select Function
+                                        select#timetable(title='Chose Function',data-bind="id:'standard-select',options: $root.NamesFunctions(), value:$data.Sufix.name,valueUpdate: 'afterkeydown',event:{ change:function(){ $root.updateTypeFlds($data.id,'Sufix')}}",type='Select',style='display:block; margin-bottom:12px; width:150px; padding: .4em;')
+                                    <!-- ko if: $data['Sufix']['type'].indexOf('function')>-1 -->    
+                                    p First Field
+                                        select#timetable(title='Chose Function',data-bind="id:'standard-select',options: $root.ListOfFieds(), value:$data.Sufix.value1,valueUpdate: 'afterkeydown',event:{ change:function() { $root.updateFlds($data.id,'Sufix')}}",type='Select',style='display:block; margin-bottom:12px; width:150px; padding: .4em;')       
+                                    <!-- /ko -->
+                                    <!-- ko if: $data['Sufix']['type'].indexOf('function')==-1 -->
+                                    p Type String
+                                        input#timetable(title='Chose Function',data-bind="id:'standard-select', value:$data.Sufix.value1,valueUpdate: 'afterkeydown',event:{ change:function(){ $root.updateFlds($data.id,'Sufix')}}",type='numeric',style='display:block; margin-bottom:12px; width:95%; padding: .4em;',')
+                                    <!-- /ko -->
+                                    <!-- ko if: $data['Sufix']['type'] == 'function' -->
+                                    p Second Field
+                                        select#timetable(title='Chose Function',data-bind="id:'standard-select',options: $root.ListOfFieds(), value:$data.Sufix.value2,valueUpdate: 'afterkeydown',event:{ change:function(){$root.updateFlds($data.id,'Sufix')}}",type='Select',style='display:block; margin-bottom:12px; width:150px; padding: .4em;')  
+                                    <!-- /ko -->
+                                    <!-- ko if: $data['Sufix']['type'] == 'txtfunction' -->
+                                    p Number of chars
+                                        input#timetable(title='Chose Function',data-bind="id:'standard-select', value:$data.Sufix.value2,valueUpdate: 'afterkeydown',event:{ change:function(){ $root.updateFlds($data.id,'Sufix')}}",type='numeric',style='display:block; margin-bottom:12px; width:95%; padding: .4em;',')  
+                                    <!-- /ko -->
+                                    .outter
+                                        div
+                                        button.ui-button.ui-widget.ui-corner-all(title='Apply Changes',data-bind="click:function() { $root.clearselectedRow({field:'Sufix' , id: $data.id}) },clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                            span.button.ui-icon-arrowrefresh-1-w
+                                            | Apply
+                                <!-- /ko -->
+                                <!-- /ko -->
+                                <!-- /ko -->                      
+                    <!-- /ko -->
+                {% endif %}
+              .modal-footer
+                 .outter(data-bind="visible: visOpt()")
+                    table.table-vcenter
+                        tbody
+                            tr
+                                th(style='width:15%') 
+                                    p Model licenses
+                                th(style='width:10%')
+                                    input(data-bind="value:$root.licenses",type='numeric',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                                th(style='width:10%')
+                                    button.ui-button.ui-widget.ui-corner-all(title='Save Changes',data-bind="click:function() {$root.save_licenses()}",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                        span.ui-icon.ui-icon-circle-check
+                                th(style='width:15%') 
+                                    p Limit Changes per Person
+                                th(style='width:10%')
+                                    input(data-bind="value:$root.limitchanges",type='numeric',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                                th(style='width:10%')
+                                    button.ui-button.ui-widget.ui-corner-all(title='Save Changes',data-bind="click:function() {$root.save_limitChanges()}",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                        span.ui-icon.ui-icon-circle-check                    
+                 #bt
+                        {% if current_user.is_hrnest_access %}
+                        button.fa.fa-cog(type='button',aria-label='Right Align',data-bind="click:function() {$root.chVisOpt()}",title='Exit whithout changes')  Options
+                        {% endif %}
+                        button.fa.fa-window-close(type='button',aria-label='Right Align',data-bind="visible:$root.persDbview().length>0 || $root.TMPCreateDraft(),click:function() {$root.Close_Refr()}",title='Exit whithout changes')  Cancel
+                        <!-- ko if: $root.TMPCreateDraft()!=true -->
+                        button.fa.fa-refresh(type='button',aria-label='Right Align',data-bind="enable: $root.TimetabList().length==0? false:true ,click:function() {$root.tmpStart_refr()}",title='Get Selected Data')  Get Data  
+                        <!-- /ko -->    
+    ul#menuP
+        li.ui-widget-header
+            div(data-bind="html:'Field : ' + CurrentFieldAttrP().toUpperCase()")
+        li.ui-widget-header.ui-state-disabled
+            div Filtering Options
+        li
+            div                 
+                span.ui-icon.ui-icon-search
+                | Filter  
+                input.ui-state-focus(type='text',data-bind="textInput:$root.CurrFilterP",style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+        li
+            div
+                span.ui-icon.ui-icon-check
+                | Apply Selected Filter
+        li
+            div
+                span.ui-icon.ui-icon-closethick
+                | Clear Selected Filter
+        li
+            div
+                span.ui-icon.ui-icon-trash
+                | Clear All Filters
+        li.ui-widget-header.ui-state-disabled
+            div Sorting Options
+        li
+            div
+                span.ui-icon.ui-icon-arrowthickstop-1-s
+                | Sort Ascending
+        li
+            div
+                span.ui-icon.ui-icon-arrowthickstop-1-n
+                | Sort Descending
+        li.ui-widget-header
+            div
+        li
+            div
+                span.ui-icon.ui-icon-circle-close
+                | Close 
+    ul#menu
+        li.ui-widget-header
+            div(data-bind="html:'Field : ' + CurrentFieldAttr().toUpperCase()")
+        li.ui-widget-header.ui-state-disabled
+            div Filtering Options
+        li
+            div                 
+                span.ui-icon.ui-icon-search
+                | Filter  
+                input.ui-state-focus(type='text',data-bind="textInput:$root.CurrFilter",style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+        li
+            div
+                span.ui-icon.ui-icon-check
+                | Apply Selected Filter
+        li
+            div
+                span.ui-icon.ui-icon-closethick
+                | Clear Selected Filter
+        li
+            div
+                span.ui-icon.ui-icon-trash
+                | Clear All Filters
+        li.ui-widget-header.ui-state-disabled
+            div Sorting Options
+        li
+            div
+                span.ui-icon.ui-icon-arrowthickstop-1-s
+                | Sort Ascending
+        li
+            div
+                span.ui-icon.ui-icon-arrowthickstop-1-n
+                | Sort Descending
+        li.ui-widget-header
+            div
+        li
+            div
+                span.ui-icon.ui-icon-circle-close
+                | Close
+     
+     ul#PersMnu                
+        //li
+            div
+                span.ui-icon.ui-icon-circle-plus
+                | Add New Person        
+        li
+            div
+                <!-- ko if: $root.SelectedPersonsPER().length > 0 -->
+                span.ui-icon.ui-icon-circle-plus
+                | Edit Selected Persons
+                <!-- /ko -->
+                <!-- ko if: $root.SelectedPersonsPER().length === 0 -->
+                span.ui-icon.ui-icon-circle-plus
+                | Add / Modify Custom Time
+                <!-- /ko -->
+        //li
+            div
+                span.ui-icon.ui-icon-circle-minus
+                | Delete Selected Persons
+        li
+            div
+                span.ui-icon.ui-icon-circle-close
+                | Close
+     ul#MenuChanges
+        li.ui-widget-header
+            div Chose Notifycation for Selected
+        li 
+            div Not Notify
+        li 
+            div Notify person once
+        li
+            div Notify every changed data  
+        li
+            div
+                span.ui-icon.ui-icon-circle-close
+                | Cancel
+     ul#menuitem
+        li
+            div 
+                 span.ui-icon.ui-icon-transferthick-e-w
+                 |Persons in Timetable
+            ul#submenu
+                <!-- ko if:$root.Data_Type() == 'Draft' -->
+                li
+                    div
+                        span.ui-icon. ui-icon-transfer-e-w
+                        | Add / Remove Persons List
+                <!-- /ko -->
+                li
+                    div 
+                        span.ui-icon.ui-icon-arrowrefresh-1-n
+                        | Get Persons List from HRNEST
+        li
+            div Datasets Option
+            ul#submenu
+                li
+                  div
+                    span.ui-icon.ui-icon-refresh
+                    | Refresh Dataset
+                {% if current_user.is_hrnest_access %}    
+                li
+                  div
+                    span.ui-icon.ui-icon-disk
+                    | Save Changes
+                {% endif %}
+                li
+                  div
+                    span.ui-icon.ui-icon-calendar
+                    | Change Edited Timetable        
+        li
+            div
+                span.ui-icon.ui-icon-newwin
+                | Turn On/Off Selection Tool
+        li            
+            div
+                span.ui-icon.ui-icon-circle-close
+                | Close
+     #dialog-form.selepers.modal.fade.in(title='Add / Remove Persons from Timetable')          
+             div.list-manager
+               div.outter
+                  div.loading-overlay(data-bind='visible: actingOnThings')
+                    span.fa.fa-spin.fa-spinner
+                    |  Doing a thing...                  
+                  div.list
+                      div.outter
+                            input.form-check-input(title='Enable/Disable Filter',type='checkbox',aria-label='Left Align', data-bind='checked: $root.enableFilter1 ')
+                            p Filter
+                            select(data-bind="enable: $root.enableFilter1 ,id:'standard-select',options:$root.workGroups,optionsText: 'name', value:$root.Filter1,valueUpdate: 'afterkeydown'")
+                            
+                      div Persons In Timetable                     
+                      ul#userContainer_1.list.list-container(data-bind="sortable: { 
+                        data: userList1, 
+                        beforeMove: beforeMove,
+                        afterMove: afterMove,
+                        options: multiSortableOptions,
+                        connectToClass: 'list-container',
+                        optionsAfterRender: setOptionDisable
+                      }")
+                        li.item(data-bind="attr: { id: 'sp_'+Id },visible: $data.inView, text: Name, click: $parent.selectProcedure.bind($data,$parent.userList1()), css: { selected: Selected }")
+                      button.selectAll(data-bind='click: selectAllItemsIn.bind(this, userList1)') Select All
+                      button(class"moveselected"='' data-bind='click: $root.moveAllFunction(userList1, userList2)') Move Selected                
+                  div.list
+                      div.outter
+                            input.form-check-input(title='Enable/Disable Filter',type='checkbox',aria-label='Left Align', data-bind='checked:  $root.enableFilter2 ')
+                            p Filter
+                            select(data-bind="enable: $root.enableFilter2 ,id:'standard-select',options:$root.workGroups,optionsText: 'name', value:$root.Filter2,valueUpdate: 'afterkeydown'")
+                            
+                      div Other People                      
+                      ul#userContainer_2.list.list-container(data-bind="sortable:  { 
+                        data:userList2, 
+                        beforeMove: beforeMove,
+                        afterMove: afterMove,
+                        options: multiSortableOptions,
+                        connectToClass: 'list-container',
+                        optionsAfterRender: setOptionDisable
+                      }")
+                        li.item(data-bind="attr: { id: 'sp_'+Id },visible: $data.inView, text: Name, click: $parent.selectProcedure.bind($data,$parent.userList2()), css: { selected: Selected }")
+                      button(class"moveselected"='' data-bind='click: $root.moveAllFunction(userList2, userList1)') Move Selected
+                      button.selectAll(data-bind='click: selectAllItemsIn.bind(this, userList2)') Select All
+             div Ctrl + to select multiple items
+             div Shift + to select multiple items 
+     ul#menuside.sidenav        
+        li
+            a.closebtn(href='javascript:void(0)', onclick='closeNav()', title='Close This Menu')&times
+        #logo-login.li
+        li.ui-widget-header.ui-state-disabled
+            div
+        li.ui-widget-header.ui-state-enabled
+            div(title='Timetable Dataset Options')
+                span.ui-icon.ui-icon-folder-open
+                |Timetable Datasets Options
+        li#t.h
+            div(title='Refresh Dataset from Database')
+                span.ui-icon.ui-icon-refresh
+                | Refresh Dataset
+        li#t.h
+            div(title='Refresh Dataset from WWW Hrnest') 
+                span.ui-icon.ui-icon-arrowrefresh-1-n
+                | Get Persons List from HRNEST
+        li#t.h
+            div(title='Change Edited Timetable')
+                span.ui-icon.ui-icon-calendar
+                | Change Edited Timetable
+        {% if current_user.is_hrnest_access %}
+        li#t.h
+            div(title='Save Changes to Database and Hrnest WWW')
+                span.ui-icon.ui-icon-disk
+                | Save Changes
+        {% endif %}
+        li.ui-widget-header.ui-state-disabled
+            div
+        li.ui-widget-header.ui-state-enabled
+            div(title='Persons in Selected Timetable') 
+                span.ui-icon.ui-icon-transferthick-e-w
+                |Persons in Timetable
+        {% if current_user.is_hrnest_access %}
+        li#p.h(data-bind="visible:$root.Data_Type() == 'Draft'")            
+            div(title='Add / Remove Persons From Selected Timetable')
+                span.ui-icon.ui-icon-transfer-e-w
+                | Add / Remove Persons List 
+        {% endif %}
+        li#p.h 
+            div(title='Show List of duplicated persons in time range')
+                span.ui-icon.ui-icon-alert
+                | Show Duplicated Persons
+        li.ui-widget-header.ui-state-disabled
+            div
+        li.ui-widget-header.ui-state-enabled
+            div(title='View Options') 
+                span.ui-icon.ui-icon-gear
+                | View options                
+        li#v.h
+            div(title='Selection Tool')
+                span.ui-icon.ui-icon-newwin
+                | Turn On/Off Selection Tool
+        li#v.h  
+            div(title='Summary of shifts') 
+                span.ui-icon.ui-icon-calculator
+                |Turn On/Off summary shifts
+        {% if current_user.is_hrnest_access %}
+        li.ui-widget-header.ui-state-disabled
+            div
+        li.ui-widget-header.ui-state-enabled
+            div(title='Persons Add / Modify') 
+                span.ui-icon.ui-icon-contact
+                | Persons
+        li#per.h
+            div(title='Add / Modify Persons')
+                span.ui-icon.ui-icon-newwin
+                | Active Persons
+        {% endif %}
+        li.ui-widget-header.ui-state-disabled
+            div
+        li.ui-widget-header.ui-state-enabled
+            div(title='Timetable WWW Quick Link') 
+                span.ui-icon.ui-icon-contact
+                | Timetable HRNEST link
+        li#l.h
+            div(title='Open Timetable WWW for Edit')
+                span.ui-icon.ui-icon-link
+                | Timetable WWW for Edit 
+        li#l.h
+            div(title='Open Timetable WWW for View')
+                span.ui-icon.ui-icon-extlink
+                | Timetable WWW for View 
+        li.ui-widget-header.ui-state-disabled
+            div                      
+        li
+            div(title='Close This Menu')
+                span.ui-icon.ui-icon-circle-close
+                | Close
+        li#down
+            div(title='Logout')                
+                a.fa.fa-sign-out(href='/logout' role='button') Logout
+     #login-form.modal.fade.in(title='Credentials Login',style="display:none;padding: .3em;")
+         .modal-dialog
+            .modal-content(title='Please enter valid credentials ')
+                #logo-login.modal-header
+                    label(for= "Login",style='display:block;') Please enter valid login and password to HRNEST
+                .modal-body       
+                    form
+                        fieldset(style='padding:0; border:0; margin-top:25px;') 
+                            label(for="name" ,style='display:block;') Login
+                            input#name.text.ui-widget-content.ui-corner-all(data-bind="value:$root.name",type='text', name='name', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')            
+                            label(for="password",style='display:block;') Password
+                            input#password.text.ui-widget-content.ui-corner-all(data-bind="value:$root.password",type="password", name='current-password', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                .modal-footer                    
+                    #bt
+                        button.fa.fa-window-close(type='button',aria-label='Right Align',data-bind="click:function() {$root.Close_PSW()}",title='Exit whithout changes')  Cancel
+                        button.fa.fa-refresh(type='button',aria-label='Right Align',data-bind="click:function() {$root.Check_credentials()}",title='Save with entered credentials')  Save Data   
+     #replaced-form.modal.fade.in(tabindex="-1", role="dialog",data-keyboard='false', data-backdrop='static', aria-labelledby="myModalLabel", aria-labelledby="myModalLabel", aria-hidden="true")
+        .modal-dialog
+            .modal-content(title='Information about replaced persons')
+                #logo-login.modal-header
+                     <!-- ko with: $root.Current_timetable() -->
+                     label.list-container(for= "timetable",style='display:block;',data-bind="html: 'Errors (Duplicated Persons) in time range from ' + date_from() + ' to ' + date_to()")
+                     <!--/ko --> 
+                     P(style='display:block;text-align: center;',data-bind="html: 'Found ' + persDuplicatesALL().length + ' errors in date range => duplicates in this Timetable ' + persDuplicates().length + ' persons' ")
+
+                .modal-body
+                     .outter                       
+                        P(style='display:block;text-align: center;') List of duplicated persons :
+                        P(style='display:block;text-align: center;') List of Timetables :
+                     P
+                     .outter
+                        select(title='Please Select For information ',multiple='true',style='display:block; margin-bottom:12px; width:47%;height:300px; padding: .4em;', data-bind="options: $root.ListOfDuplicatedPersons,optionsText: 'name',value:$root.selected_duplicated_person") 
+                        select(title='Please Select For Enable button Open in HRNEST ',multiple='true', style='display:block; margin-bottom:12px; width:47%; height:300px; padding: .4em;', data-bind="options: $root.ListOfSelected_timetables_duplicates,optionsText: 'title',value:$root.selected_duplicated_timetable") 
+                .modal-footer                    
+                    #bt
+                        .outter
+                            button.fa.fa-window-close(type='button',aria-label='Right Align',data-bind="visible:$root.persDbview().length>0,click:function() {$root.Close_Dupl()}",title='Exit whithout changes')  Cancel
+                            button.fa.fa-refresh(data-bind="click:get_recrdset",title='Press for Requery data') Refresh Data                            
+                            <!-- ko if: typeof $root.selected_duplicated_timetable() != 'undefined' -->
+                            button.fa.fa-external-link(type='button',aria-label='Right Align',data-bind="click:function() {OpenWindow('https://hrnest.io/WorkTime/TimeTable/EditTimeTable/' + $root.selected_duplicated_timetable().hrnest_id )}",title='Open Selected Timetable in HRNEST')  Open Timetable For Edit In Hrnest
+                            button.fa.fa-external-link(type='button',aria-label='Right Align',data-bind="click:function() {OpenWindow('https://hrnest.io/WorkTime/TimeTable/Details/' + $root.selected_duplicated_timetable().hrnest_id )}",title='Open Selected Timetable in HRNEST')  Open Timetable For View In Hrnest
+                            <!--/ko -->
+     #AddModPerson.modal.fade.in(tabindex="-1", role="dialog",data-keyboard='false', data-backdrop='static', aria-labelledby="myModalLabel", aria-labelledby="myModalLabel", aria-hidden="true")             
+         p Please select field / rows for edit List
+            div.list-manager
+                #table.table-pers(style="border: thin solid black")           
+                   table.table-vcenter.main-table(id="main-table") 
+                       div.loading-overlay(data-bind="visible:actingOnThingsP")
+                            span.fa.fa-spin.fa-spinner
+                            |  Please Wait For Data ...
+                       thead        
+                           tr(data-bind="foreach: { data: $root.LimitPerson_Name_Fields(), includeDestroyed: false ,  noChildContext: true}")
+                                th(scope="col",data-bind="contMenuP:$data,resizable:$data,visible:$root.isVisInfo($data)" )
+                                    <!-- ko if: $data['name']!='attr' -->
+                                    p(data-bind="html:$data['name'].toString().replace('_',' ').toUpperCase(),style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")
+                                    <!-- ko if: $data['name'] == $parent.sortKeyP() -->
+                                    #bts.notification
+                                            div(data-bind="css: $parent.ActiveSortKeyP() == 1 ? 'asc' : 'desc'")
+                                    <!-- /ko -->
+                                    <!-- ko if: $parent.filteredP($data['name'].toString())=='true' -->
+                                    #btf.notification
+                                            div.filter
+                                    <!-- /ko -->
+                                    <!-- /ko -->
+                       tbody(data-bind="template: {name: 'personMod', foreach: $root.FilteredSetP()},css: $root.CurrRow() === '' ? 'hov': ''")
+                       tbody
+                            tr 
+                                
+                       tbody
+                            tr(data-bind="contMenuBody:'none',style: { height: $root.NullBodyHP() + 'px'}")
+                       tfoot        
+                           tr(data-bind="foreach: { data: $root.LimitPerson_Name_Fields(), includeDestroyed: false ,  noChildContext: true}")
+                                th(scope="col",data-bind="contMenuP:$data,resizable:$data,visible:$root.isVisInfo($data)" )
+                                    <!-- ko if: $data['name']!='attr' -->
+                                    p(data-bind="html:$data['name'].toString().replace('_',' ').toUpperCase(),style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")
+                                    <!-- ko if: $data['name'] == $parent.sortKeyP() -->
+                                    #bts.notification
+                                            div(data-bind="css: $parent.ActiveSortKeyP() == 1 ? 'asc' : 'desc'")
+                                    <!-- /ko -->
+                                    <!-- ko if: $parent.filteredP($data['name'].toString())=='true' -->
+                                    #btf.notification
+                                            div.filter
+                                    <!-- /ko -->
+                                    <!-- /ko -->
+     #BlockModify.modal.fade.in(tabindex="-1", role="dialog",data-keyboard='false', data-backdrop='static', aria-labelledby="myModalLabel", aria-labelledby="myModalLabel", aria-hidden="true")
+        h4 Edit Persons Fields
+        #tablea
+          table.table-vcenter
+            thead        
+                tr
+                  th(data-bind="style: {width: 50 + 'px'}") 
+                  th(data-bind="style: {width: 200 + 'px'}") Name Field
+                  th(data-bind="style: {width: 300 + 'px'}") Value Field 
+            tbody
+                tr
+                  th 
+            tbody(data-bind="foreach: { data: $root.AvaliableEditPersView, includeDestroyed: false}")
+                tr
+                  th
+                   span.ui-icon.ui-icon-trash(data-bind="click: $parent.removeField,attr: {title:'Press for delete fields from modifications'}") 
+                  th
+                    span(data-bind="text: $data.field") 
+                  th
+                   input(data-bind="value: $data.Modvalue")           
+    
+
+     #AddModifyNonStandardTime.modal.fade.in(tabindex="-1", role="dialog",data-keyboard='false', data-backdrop='static', aria-labelledby="myModalLabel", aria-labelledby="myModalLabel", aria-hidden="true")             
+                   
+            .outter
+                <!-- ko if: $root.persAttr() -->
+                h3(data-bind="html: $root.persAttr().Name()")
+                .outter
+                    label(for="date_from" ,style='display:block;') Date From                           
+                        input#date_from(data-bind="value:$root.reqDF ,event: {change: $root.get_UserEnumerbleRequest()}, valueUpdate: 'afterkeydown'",type='date', name='Date From', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                    label(for="date_to" ,style='display:block;') Date From                           
+                        input#date_to(data-bind="value:$root.reqDT,event: {change: $root.get_UserEnumerbleRequest()}, valueUpdate: 'afterkeydown'",type='date', name='Date From', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                <!-- /ko -->              
+            div.list-manager
+                #table.table-req(style="border: thin solid black")           
+                   table.table-vcenter.main-table(id="main-table") 
+                       div.loading-overlay(data-bind="visible:actingOnThingsR")
+                            span.fa.fa-spin.fa-spinner
+                            |  Please Wait ... 
+                       thead        
+                           tr(data-bind="foreach: { data: $root.LimituserFrmRequests_Name_Fields(), includeDestroyed: false ,  noChildContext: true}")
+                                th(scope="col",data-bind="contMenuP:$data,resizable:$data" )
+                                    <!-- ko if: $data['name']!='attr' -->
+                                    p(data-bind="html:$data['name'].toString().replace('_',' ').toUpperCase(),style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")
+                                    <!-- /ko -->
+                       tbody(data-bind="template: {name: 'personReq', foreach: $root.userFrmRequests()}")
+                       tbody 
+                            tr
+                                th
+                                   
+                                th 
+                                    button.ui-button.ui-widget.ui-corner-all(title='Press for New Function',data-bind="click:function() {$root.addRequest()},clickBubble: false",type='button',style='display:block; margin-bottom:12px; height:30px; padding: .4em;')
+                                        span.ui-icon.ui-icon-circle-arrow-e
+                                        |Add
+                       tbody
+                            tr(data-bind="contMenuBody:'none',style: { height: $root.NullBodyHR() + 'px'}")
+                       tfoot        
+                           tr(data-bind="foreach: { data: $root.LimituserFrmRequests_Name_Fields(), includeDestroyed: false ,  noChildContext: true}")
+                                th(scope="col",data-bind="contMenuP:$data,resizable:$data" )
+                                    <!-- ko if: $data['name']!='attr' -->
+                                    p(data-bind="html:$data['name'].toString().replace('_',' ').toUpperCase(),style: {width: $data.w() + 'px','max-width': $data.w() + 'px'}")                                    
+                                    <!-- /ko -->

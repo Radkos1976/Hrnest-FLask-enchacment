@@ -1,0 +1,180 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title= title
+    link(rel='stylesheet', href='/static/content/style.css')
+    link(rel='stylesheet', type='text/css', href='/static/content/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='/static/content/jquery-ui.css')
+    
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
+    script(src='/static/scripts/jquery-1.10.2.js')    
+    script(src='/static/scripts/jquery-ui.js')
+    script(src='/static/scripts/bootstrap.js')
+    script(src='/static/scripts/ko.js')
+    script(src='/static/scripts/main.js')
+  body
+    #load.div(style="display:none")
+      .outter
+          h3=title       
+          #bt
+            div(data-bind="css:multiselect()=='Enabled'?'box':''")           
+              .box__content                                        
+                .box__description                
+                  <!-- ko if: multiselect()=='Enabled' -->
+                  div(style="border: thin solid black")
+                    p
+                    p(style="text-align: center",title='Please select a selection mode') Chose Selection Mode : 
+                      select(data-bind="options: $root.availablemodes, value:bindModes,valueUpdate: 'afterkeydown'",style="border: thin solid black")
+                    <!-- ko if: bindModes()=='Select chosen days in week' -->
+                    div(style="text-align: center")
+                      p
+                      <!-- ko foreach: weekday -->
+                      input(type="checkbox",data-bind="checkedValue: WeekDay, checked: $root.chosenDays",title='Chose days in the week') 
+                      span(data-bind="text:WeekDay")
+                      <!-- /ko -->
+                    <!-- /ko -->
+                  p 
+                  div(style="border: thin solid black")
+                    <!-- ko if: bindModes()!='Copy from another person' --> 
+                    p
+                    p(style="text-align: center",title='Please select a symbol to replace in selected cells') Select Symbol to replace : 
+                      select(data-bind="options: $root.availableitems(), value:bindSelect,valueUpdate: 'afterkeydown'",style="border: thin solid black")                 
+                    <!-- /ko -->
+                    <!-- ko if: bindModes()=='Copy from another person' -->
+                    p
+                    p(style="text-align: center",title='Chose Person for copy statuses') Please select Person :
+                      select(data-bind="options: $root.ListOfPersons(), value:CopyFromPerson, valueUpdate: 'afterkeydown'",style="border: thin solid black")
+                    <!-- /ko -->
+                  p
+                  p(style="text-align: center",title='Please choose what you want to do') Choose what you want to do
+                  p
+                  button.fa.fa-exchange(data-bind="click:ReplaceItems,html:'Replace selected'",style="height: 2vw;float: right;",title='Press to replace selected states')
+                  button.fa.fa-object-group(data-bind="click:Unselect,html:'Unselect All'",style="height: 2vw;float: right;",title='Press to Unselect ALL Selection')
+                  button.fa.fa-object-group(data-bind="click:multi,html:'Disable Tool'",style="height: 2vw;float: right;",title='Press to disable selection tool')                
+                  <!-- /ko --> 
+                .box__title
+                  button.fa.fa-object-group(data-bind="click:multi,html:'Selection Tool :' + multiselect()",title='Press to enable/disable selection tool')
+      .outter
+        div(data-bind="html: '<b>Data for the period from: '+ valid_date_from() + ' to: ' + valid_date_to() + ' </b>  <i>          Refresh date:' + emp_sta_refr() + '</i>'")
+        div(data-bind="html: 'Changes for ' + Count_Changes() +' items'")
+        div Select Header Fields 
+            select(data-bind="options: fott_view, value:headerSelected,valueUpdate: 'afterkeydown'")
+
+      #table-scroll.table-scroll(style="border: thin solid black")        
+        table.table-vcenter.main-table(id="main-table")
+          <!-- ko if: headerSelected()=='Full date' -->
+          thead         
+            tr(data-bind="foreach:table_view_func")
+              th(scope="col",data-bind="click: $parent.sortColumnB,css: $data == $parent.sortKeyB() ? $parent.srtB() == 1 ? 'asc' : 'desc' : ''",title='Naciśnij aby sortować według kolumny')
+                butcontainer.ton.btn.btn-link(type='button',aria-label='Left Align',title='Naciśnij dla ustalenia filtru',data-bind="text: $data.replace('_',' '),css: $parent.filtered($data)=='true' ? 'filter' : '',click: $root.openDialog ,clickBubble: false")
+          <!-- /ko -->
+          <!-- ko if: headerSelected()=='Month name' -->                             
+          thead(data-bind="foreach: Month_Values_fields")
+            tr(data-bind="foreach: $parent.table_view_func")
+              th(scope="col")                
+                  <!-- ko if: $parent[$data]!=undefined -->
+                  p(data-bind="html: $parent[$data]")
+                  <!-- /ko -->
+          <!-- /ko -->
+          <!-- ko if: headerSelected()=='Number Day' -->                             
+          thead(data-bind="foreach: day_Values_fields")
+            tr(data-bind="foreach: $parent.table_view_func")
+              th(scope="col")                
+                  <!-- ko if: $parent[$data]!=undefined -->
+                  p(data-bind="html: $parent[$data]")
+                  <!-- /ko -->
+          <!-- /ko -->
+          <!-- ko if: headerSelected()=='Week Day' -->                             
+          thead(data-bind="foreach: Weekday_Values_fields")
+            tr(data-bind="foreach: $parent.table_view_func")
+              th(scope="col")
+                <!-- ko if: $parent[$data]!=undefined -->
+                p(data-bind="html: $parent[$data]")
+                <!-- /ko -->
+          <!-- /ko -->
+          tbody(data-bind="foreach: { data: $root.pagedRows, includeDestroyed: false }")
+            tr.d-flex.justify-content-center(data-bind="foreach: $parent.table_view_func")
+              th(data-bind="click: function() {$root.multt_select($parent['guid'],$data)},style:{'background-color':$root.bckgr($data)},css:$root.selected($data,$parent['guid'])")  
+                <!-- ko if: $data.length!=10 -->
+                p(data-bind="html:$parent[$data]")
+                <!-- /ko -->               
+                <!-- ko if: $data.length==10 -->               
+                select(data-bind="enable: $root.multiselect()!='Enabled',css:$parent[$data + 'old']!=$parent[$data]() ?'flash':'opt'+$parent[$data](),id:'standard-select',options: $root.availableitems, value:$parent[$data]")
+                <!-- ko if: $parent[$data + 'old']!=undefined  --> 
+                #btt.notification(data-bind="visible: $parent[$data + 'old']!=$parent[$data]() ? true : false ")
+                    button.fa.fa-undo(data-bind="attr: {title:'Undo Changes to value '+ $parent[$data + 'old']},click: function() {$root.undo($data,$parent['guid'])}")
+                <!-- /ko --> 
+                <!-- /ko -->
+          <!-- ko if: fottSelected()=='Full date' -->
+          tfoot         
+            tr(data-bind="foreach:table_view_func")
+              th(scope="col",data-bind="click: $parent.sortColumnB,css: $data == $parent.sortKeyB() ? $parent.srtB() == 1 ? 'asc' : 'desc' : ''",title='Naciśnij aby sortować według kolumny')
+                butcontainer.ton.btn.btn-link(type='button',aria-label='Left Align',title='Naciśnij dla ustalenia filtru',data-bind="text: $data.replace('_',' '),css: $parent.filtered($data)=='true' ? 'filter' : '',click: $root.openDialog ,clickBubble: false")
+          <!-- /ko -->
+          <!-- ko if: fottSelected()=='Month name' -->                             
+          tfoot(data-bind="foreach: Month_Values_fields")
+            tr(data-bind="foreach: $parent.table_view_func")
+              th(scope="col")
+                <!-- ko if: $parent[$data]!=undefined -->
+                p(data-bind="html: $parent[$data]")
+                <!-- /ko -->
+          <!-- /ko -->
+          <!-- ko if: fottSelected()=='Number Day' -->                             
+          tfoot(data-bind="foreach: day_Values_fields")
+            tr(data-bind="foreach: $parent.table_view_func")
+              th(scope="col")
+                <!-- ko if: $parent[$data]!=undefined -->
+                p(data-bind="html: $parent[$data]")
+                <!-- /ko -->
+          <!-- /ko -->
+          <!-- ko if: fottSelected()=='Week Day' -->                             
+          tfoot(data-bind="foreach: Weekday_Values_fields")
+            tr(data-bind="foreach: $parent.table_view_func")
+              th(scope="col")
+                <!-- ko if: $parent[$data]!=undefined -->
+                p(data-bind="html: $parent[$data]")
+                <!-- /ko -->
+          <!-- /ko --> 
+        
+      .outter        
+          #bt                      
+            button.fa.fa-save Save Changes            
+            button.fa.fa-refresh(data-bind="click:get_recrdset") Refresh Data
+          #NAV.btn-toolbar.mb-3(role='toolbar')
+            #NAV.btn-group.btn-light(role="group",aria-label='Basic example')            
+                button.btn.btn-light(type='button',data-bind='click: $root.previousPage, clickBubble: false, visible: $root.pageIndex() > 0') Previous Page
+                button.btn.btn-light(type='button',data-bind='click: $root.nextPage, clickBubble: false, visible: $root.pageIndex() < $root.maxPageIndex()') Next Page 
+                button.btn.btn-light(type='button',data-bind="enable:false") Rows per Page
+                select.btn-primary(data-bind="options: itemscOunt, value:pageSize,valueUpdate: 'afterkeydown'",title="Decrease the quantity of rows for efficiency") 
+             
+          div Select Fotter Fields        
+              select(data-bind="options: fott_view, value:fottSelected,valueUpdate: 'afterkeydown'")
+    #dialog-message(title='Loading...',style="display:none")
+      p
+        span.ui-icon.ui-icon-circle-check(style='float:left; margin:0 7px 50px 0;')
+        |     Please Wait To Load Data.
+      #mes.a(data-bind="html:message")
+    #dialog-form.modal.fade.in(tabindex="-1", role="dialog",data-keyboard='false', data-backdrop='static', aria-labelledby="myModalLabel", aria-labelledby="myModalLabel", aria-hidden="true")
+        .modal-dialog
+            .modal-content(title='Please Select a date ranges ',)
+                .modal-header
+                     label(for= "timetable",style='display:block;') Select Active Timetable
+                            select#timetable(data-bind="id:'standard-select',options: $root.TimetabList,optionsText: 'title', value:Current_timetable",type='Select',style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                     p
+                     | Chose a range of dates: 
+                     input.form-check-input(type='checkbox',aria-label='Left Align', data-bind='checked: Frange')
+                .modal-body
+                    <!-- ko with: $root.Current_timetable() -->                   
+                    p(data-bind="html: 'Selected :' + title() ") 
+                    p(data-bind="html: 'Range dates From ' + date_from() + ' to ' + date_to()")                    
+                    form(data-bind= "visible:$root.Frange")                                                                             
+                            label(for="date_from" ,style='display:block;',data-bind= "visible:$root.Frange") Date From
+                            input#date_from(data-bind="value:$root.valid_date_from, visible:$root.Frange ,attr: {'min':date_from,'max':date_to} ",type='date', name='Date From', style='display:block; margin-bottom:12px; width:95%; padding: .4em;') 
+                            label(for="date_to",style='display:block;',data-bind= "visible:$root.Frange") Date To
+                            input#date_to(data-bind="value:$root.valid_date_to,visible:$root.Frange,attr: {'min':date_from,'max':date_to}",type='date', name='Date To', style='display:block; margin-bottom:12px; width:95%; padding: .4em;')
+                    <!--/ko -->        
+                .modal-footer                    
+                    #bt
+                        button.fa.fa-refresh(type='button',aria-label='Right Align',data-bind="click:$root.Start_refr",title='Refresh Data')  Refresh Data

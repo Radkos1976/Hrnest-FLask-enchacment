@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="width: 400px; height: 475px;max-height:550px; position: absolute; top: 50%; left: 50%; margin-top: -300px; margin-left: -200px;  ">
+    <div class="container" style="color: #333; background-color: #fff; border: thin solid black; padding-top: 2px; padding-bottom: 2px; margin-left: 2px; margin-right: 2px; ">
+        <h2></h2>
+        <div class="well">
+            <div style="padding: 6px 12px; display: block; background: url(/static/content/images/HrnestBoss.svg) no-repeat; width: 230px; height: 38px; text-indent: -9998px;"></div>
+            <h2 style="text-align:center">Activation Account</h2>
+            <h3 style="text-align:center">{{message}}</h3>
+            {% if message!='Activation error => selected user dont exist' and message!='Link Error' %}
+            <a style="text-align:center" href="{{ url_for('login') }}" class="btn btn-info" role="button" style="color: #333; background-color: #fff;">
+                Login
+            </a>
+            {% else %}
+            <a style="text-align:center" href="{{ url_for('register') }}" class="btn btn-info" role="button" style="color: #333; background-color: #fff;">
+                Register
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

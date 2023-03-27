@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultProvider": "filesystem",
+  "libraries": [
+    {
+      "library": " https://cdn.jsdelivr.net/npm/@tko/build.knockout@4.0.0-alpha8/dist/build.knockout.min.js",
+      "destination": "HrnestBoss/static/scripts/build.knockout.min/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "font-awesome@4.7.0",
+      "destination": "HrnestBoss/static/font-awesome/"
+    }
+  ]
+}
